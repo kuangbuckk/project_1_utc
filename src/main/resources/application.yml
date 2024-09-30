@@ -1,0 +1,21 @@
+server:
+  port: 8090
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  datasource:
+    url: jdbc:postgresql://localhost:5433/ticketbooking?serverTimezone=UTC
+    username: postgres
+    password:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+api:
+  prefix: api/v1
