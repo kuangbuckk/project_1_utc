@@ -1,9 +1,13 @@
 package com.project.ticketBooking.services;
 
 import com.project.ticketBooking.dtos.EventDTO;
+import com.project.ticketBooking.dtos.EventImageDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
+import com.project.ticketBooking.exceptions.InvalidParamException;
 import com.project.ticketBooking.models.Event;
+import com.project.ticketBooking.models.EventImage;
 import com.project.ticketBooking.models.Organization;
+import com.project.ticketBooking.repositories.EventImageRepository;
 import com.project.ticketBooking.repositories.EventRepository;
 import com.project.ticketBooking.repositories.OrganizationRepository;
 import com.project.ticketBooking.services.interfaces.IEventService;
@@ -15,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class EventService implements IEventService {
     private final EventRepository eventRepository;
+    private final EventImageRepository eventImageRepository;
     private final OrganizationRepository organizationRepository;
     @Override
     public List<Event> getAllEvents() {
@@ -57,5 +62,26 @@ public class EventService implements IEventService {
     @Override
     public void deleteEvent(Long eventId) {
         eventRepository.deleteById(eventId);
+    }
+
+    @Override
+    public EventImage createEventImage(Long eventId, EventImageDTO eventImageDTO) throws Exception {
+        Event existingEvent = eventRepository
+                .findById(eventId)
+                .orElseThrow(() ->
+                        new DataNotFoundException(
+                                "Cannot find event with id: "+ eventImageDTO.getEventId()));
+        EventImage newEventImage = EventImage.builder()
+                .event(existingEvent)
+                .imageUrl(eventImageDTO.getImageUrl())
+                .build();
+        //Ko cho insert quá 5 ảnh cho 1 sản phẩm
+        int size = eventImageRepository.findByEventId(eventId).size();
+        if(size >= EventImage.MAXIMUM_IMAGES_PER_EVENT) {
+            throw new InvalidParamException(
+                    "Number of images must be <= "
+                            + EventImage.MAXIMUM_IMAGES_PER_EVENT);
+        }
+        return eventImageRepository.save(newEventImage);
     }
 }
