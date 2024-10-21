@@ -5,7 +5,6 @@ import com.project.ticketBooking.dtos.EventImageDTO;
 import com.project.ticketBooking.models.Event;
 import com.project.ticketBooking.models.EventImage;
 import com.project.ticketBooking.services.EventService;
-import com.project.ticketBooking.services.EventService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
