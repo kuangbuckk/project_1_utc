@@ -26,6 +26,6 @@ public class Event extends BaseEntity{
 
     //organization
     @ManyToOne
-    @Column(name = "organization_id", nullable = false)
+    @JoinColumn(name = "organization_id", nullable = false)
     private Organization organizationId;
 }
