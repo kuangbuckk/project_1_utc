@@ -27,5 +27,5 @@ public class TicketCategoryDTO {
     @NotNull(message = "Event ID cannot be null")
     @JsonProperty("event_id")
     @Min(value = 1, message = "Event ID must be greater than 0")
-    private Integer eventId;
+    private Long eventId;
 }
