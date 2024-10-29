@@ -9,9 +9,9 @@ import com.project.ticketBooking.models.Ticket;
 import java.util.List;
 
 public interface ITicketService {
-    List<Ticket> getAllTicketsByEvent(Long eventId) throws DataNotFoundException; //add paging later
-    Event getEventById(Long ticketId) throws DataNotFoundException;
-    Event createTicket(TicketDTO ticketDTO) throws DataNotFoundException;
-    Event updateTicket(Long ticketId, TicketDTO ticketDTO) throws DataNotFoundException;
+    List<Ticket> getTicketsByTicketCategoryId(Long ticketCategoryId);
+    Ticket getTicketById(Long id) throws DataNotFoundException;
+    Ticket createTicket(TicketDTO ticketDTO);
+    Ticket updateTicket(Long ticketId, TicketDTO ticketDTO) throws DataNotFoundException;
     void deleteTicket(Long ticketId);
 }
