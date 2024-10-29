@@ -16,7 +16,7 @@ public class TicketOrderDTO {
 
     @JsonProperty("user_id")
     @Min(value = 1, message = "User ID must be greater than 0")
-    private Integer userId;
+    private Long userId;
 
     @JsonProperty("order_date")
     private LocalDate orderDate;
