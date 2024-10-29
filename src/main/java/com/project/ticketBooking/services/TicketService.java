@@ -4,8 +4,12 @@ import com.project.ticketBooking.dtos.TicketDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.models.Event;
 import com.project.ticketBooking.models.Ticket;
+import com.project.ticketBooking.models.TicketCategory;
+import com.project.ticketBooking.models.User;
 import com.project.ticketBooking.repositories.EventRepository;
+import com.project.ticketBooking.repositories.TicketCategoryRepository;
 import com.project.ticketBooking.repositories.TicketRepository;
+import com.project.ticketBooking.repositories.UserRepository;
 import com.project.ticketBooking.services.interfaces.ITicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,33 +20,55 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TicketService implements ITicketService {
     private final TicketRepository ticketRepository;
-    private final EventRepository eventRepository;
+    private final TicketCategoryRepository ticketCategoryRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public List<Ticket> getAllTicketsByEvent(Long eventId) throws DataNotFoundException {
-        Event existingEvent = eventRepository.findById(eventId)
-                .orElseThrow(()-> new DataNotFoundException("Can't find event with ID: " + eventId));
-        List<Ticket> ticketList = existingEvent.
-        return null;
+    public List<Ticket> getTicketsByTicketCategoryId(Long ticketCategoryId) {
+        return ticketRepository.findByTicketCategoryId(ticketCategoryId);
     }
 
     @Override
-    public Event getEventById(Long ticketId) throws DataNotFoundException {
-        return null;
+    public Ticket getTicketById(Long id) throws DataNotFoundException {
+        return ticketRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Ticket not found"));
     }
 
     @Override
-    public Event createTicket(TicketDTO ticketDTO) throws DataNotFoundException {
-        return null;
-    }
+public Ticket createTicket(TicketDTO ticketDTO) throws DataNotFoundException {
+    User existingUser = userRepository.findById(ticketDTO.getUserId())
+            .orElseThrow(() -> new DataNotFoundException("User not found"));
 
-    @Override
-    public Event updateTicket(Long ticketId, TicketDTO ticketDTO) throws DataNotFoundException {
-        return null;
-    }
+    TicketCategory ticketCategory = ticketCategoryRepository.findById(ticketDTO.getTicketCategoryId())
+            .orElseThrow(() -> new DataNotFoundException("Ticket Category not found"));
+
+    Ticket ticket = Ticket.builder()
+            .ticketCategory(ticketCategory)
+            .status(ticketDTO.getStatus())
+            .user(existingUser)
+            .build();
+    return ticketRepository.save(ticket);
+}
+
+@Override
+public Ticket updateTicket(Long ticketId, TicketDTO ticketDTO) throws DataNotFoundException {
+    Ticket ticket = ticketRepository.findById(ticketId)
+            .orElseThrow(() -> new DataNotFoundException("Ticket not found"));
+
+    User existingUser = userRepository.findById(ticketDTO.getUserId())
+            .orElseThrow(() -> new DataNotFoundException("User not found"));
+
+    TicketCategory ticketCategory = ticketCategoryRepository.findById(ticketDTO.getTicketCategoryId())
+            .orElseThrow(() -> new DataNotFoundException("Ticket Category not found"));
+
+    ticket.setTicketCategory(ticketCategory);
+    ticket.setStatus(ticketDTO.getStatus());
+    ticket.setUser(existingUser);
+    return ticketRepository.save(ticket);
+}
 
     @Override
     public void deleteTicket(Long ticketId) {
-
+        ticketRepository.deleteById(ticketId);
     }
 }
