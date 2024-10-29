@@ -18,10 +18,10 @@ public class TicketDTO {
     @NotNull(message = "Ticket category ID cannot be null")
     @JsonProperty("ticket_category_id")
     @Min(value = 1, message = "Ticket category ID must be greater than 0")
-    private Integer ticketCategoryId;
+    private Long ticketCategoryId;
 
     @NotNull(message = "User ID cannot be null")
     @JsonProperty("user_id")
     @Min(value = 1, message = "User ID must be greater than 0")
-    private Integer userId;
+    private Long userId;
 }
