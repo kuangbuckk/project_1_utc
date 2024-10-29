@@ -1,11 +1,11 @@
 package com.project.ticketBooking.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Data
 @Getter
@@ -13,18 +13,15 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketDTO {
-    @NotBlank(message = "Ticket's name can't be empty")
-    @Min(value = 1, message = "Ticket's name must be at least 1 character")
-    @Max(value = 255, message = "Ticket's name maximum is 255 characters")
-    private String name;
+    private String status;
 
-    @NotEmpty(message = "Ticket's price can't be empty")
-    @Min(value = 1, message = "Ticket's price must be greater than 0")
-    private Integer price;
+    @NotNull(message = "Ticket category ID cannot be null")
+    @JsonProperty("ticket_category_id")
+    @Min(value = 1, message = "Ticket category ID must be greater than 0")
+    private Integer ticketCategoryId;
 
-    private String description;
-
-    @JsonProperty(value = "event_id")
-    @Min(value = 1, message = "Event's ID must be over 0")
-    private Long eventId;
+    @NotNull(message = "User ID cannot be null")
+    @JsonProperty("user_id")
+    @Min(value = 1, message = "User ID must be greater than 0")
+    private Integer userId;
 }
