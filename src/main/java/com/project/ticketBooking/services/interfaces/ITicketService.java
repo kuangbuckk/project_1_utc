@@ -11,7 +11,7 @@ import java.util.List;
 public interface ITicketService {
     List<Ticket> getTicketsByTicketCategoryId(Long ticketCategoryId);
     Ticket getTicketById(Long id) throws DataNotFoundException;
-    Ticket createTicket(TicketDTO ticketDTO);
+    Ticket createTicket(TicketDTO ticketDTO) throws DataNotFoundException;
     Ticket updateTicket(Long ticketId, TicketDTO ticketDTO) throws DataNotFoundException;
     void deleteTicket(Long ticketId);
 }

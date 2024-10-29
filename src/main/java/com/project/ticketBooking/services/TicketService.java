@@ -35,37 +35,37 @@ public class TicketService implements ITicketService {
     }
 
     @Override
-public Ticket createTicket(TicketDTO ticketDTO) throws DataNotFoundException {
-    User existingUser = userRepository.findById(ticketDTO.getUserId())
-            .orElseThrow(() -> new DataNotFoundException("User not found"));
+    public Ticket createTicket(TicketDTO ticketDTO) throws DataNotFoundException {
+        User existingUser = userRepository.findById(ticketDTO.getUserId())
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
 
-    TicketCategory ticketCategory = ticketCategoryRepository.findById(ticketDTO.getTicketCategoryId())
-            .orElseThrow(() -> new DataNotFoundException("Ticket Category not found"));
+        TicketCategory ticketCategory = ticketCategoryRepository.findById(ticketDTO.getTicketCategoryId())
+                .orElseThrow(() -> new DataNotFoundException("Ticket Category not found"));
 
-    Ticket ticket = Ticket.builder()
-            .ticketCategory(ticketCategory)
-            .status(ticketDTO.getStatus())
-            .user(existingUser)
-            .build();
-    return ticketRepository.save(ticket);
-}
+        Ticket ticket = Ticket.builder()
+                .ticketCategory(ticketCategory)
+                .status(ticketDTO.getStatus())
+                .user(existingUser)
+                .build();
+        return ticketRepository.save(ticket);
+    }
 
-@Override
-public Ticket updateTicket(Long ticketId, TicketDTO ticketDTO) throws DataNotFoundException {
-    Ticket ticket = ticketRepository.findById(ticketId)
-            .orElseThrow(() -> new DataNotFoundException("Ticket not found"));
+    @Override
+    public Ticket updateTicket(Long ticketId, TicketDTO ticketDTO) throws DataNotFoundException {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new DataNotFoundException("Ticket not found"));
 
-    User existingUser = userRepository.findById(ticketDTO.getUserId())
-            .orElseThrow(() -> new DataNotFoundException("User not found"));
+        User existingUser = userRepository.findById(ticketDTO.getUserId())
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
 
-    TicketCategory ticketCategory = ticketCategoryRepository.findById(ticketDTO.getTicketCategoryId())
-            .orElseThrow(() -> new DataNotFoundException("Ticket Category not found"));
+        TicketCategory ticketCategory = ticketCategoryRepository.findById(ticketDTO.getTicketCategoryId())
+                .orElseThrow(() -> new DataNotFoundException("Ticket Category not found"));
 
-    ticket.setTicketCategory(ticketCategory);
-    ticket.setStatus(ticketDTO.getStatus());
-    ticket.setUser(existingUser);
-    return ticketRepository.save(ticket);
-}
+        ticket.setTicketCategory(ticketCategory);
+        ticket.setStatus(ticketDTO.getStatus());
+        ticket.setUser(existingUser);
+        return ticketRepository.save(ticket);
+    }
 
     @Override
     public void deleteTicket(Long ticketId) {
