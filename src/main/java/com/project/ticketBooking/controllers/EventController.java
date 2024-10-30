@@ -69,15 +69,16 @@ public class EventController {
         }
     }
 
-    @PostMapping(value = "uploads/{id}",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "uploads/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadImages(
             @PathVariable("id") Long eventId,
-            @ModelAttribute("files") List<MultipartFile> files
+            @RequestParam("files") List<MultipartFile> files
     ) {
         try {
             Event existingEvent = eventService.getEventById(eventId);
-            files = files == null ? new ArrayList<MultipartFile>() : files;
+            if (files == null) {
+                files = new ArrayList<>();
+            }
             if (files.size() > EventImage.MAXIMUM_IMAGES_PER_EVENT) {
                 return ResponseEntity.badRequest().body("You can only upload maximum 5 images");
             }
