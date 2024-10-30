@@ -84,4 +84,12 @@ public class EventService implements IEventService {
         }
         return eventImageRepository.save(newEventImage);
     }
+
+    @Override
+    public List<Event> getAllEventsByOrganizationId(Long organizationId) throws DataNotFoundException {
+        Organization existingOrganization = organizationRepository
+                .findById(organizationId)
+                .orElseThrow(()-> new DataNotFoundException("Can't find organization with ID:"));
+        return eventRepository.findByOrganizationId(existingOrganization);
+    }
 }

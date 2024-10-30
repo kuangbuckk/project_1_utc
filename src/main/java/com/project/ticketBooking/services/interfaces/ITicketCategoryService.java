@@ -12,4 +12,6 @@ public interface ITicketCategoryService {
     TicketCategory createTicketCategory(TicketCategoryDTO ticketCategoryDTO) throws DataNotFoundException;
     TicketCategory updateTicketCategory(Long id, TicketCategoryDTO ticketCategoryDTO) throws DataNotFoundException;
     void deleteTicketCategory(Long id);
+    List<TicketCategory> getTicketCategoriesByEventId(Long eventId);
+    boolean hasAvailableTickets(Long categoryId);
 }

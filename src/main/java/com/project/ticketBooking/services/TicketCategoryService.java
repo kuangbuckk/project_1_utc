@@ -63,4 +63,14 @@ public class TicketCategoryService implements ITicketCategoryService {
         ticketCategoryRepository.deleteById(id);
     }
 
+    @Override
+    public List<TicketCategory> getTicketCategoriesByEventId(Long eventId) {
+        return ticketCategoryRepository.findByEventId(eventId);
+    }
+
+    @Override
+    public boolean hasAvailableTickets(Long categoryId) {
+        return ticketCategoryRepository.existsByIdAndRemainingCountGreaterThan(categoryId, 0);
+    }
+
 }

@@ -17,4 +17,5 @@ public interface IEventService {
     void deleteEvent(Long eventId);
 
     EventImage createEventImage(Long eventId, EventImageDTO eventImageDTO) throws Exception;
+    List<Event> getAllEventsByOrganizationId(Long organizationId) throws DataNotFoundException;
 }

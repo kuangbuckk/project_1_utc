@@ -31,7 +31,7 @@ public class CategoryService implements ICategoryService {
         Category newcategory = Category.builder()
                 .name(categoryDTO.getName())
                 .build();
-        return newcategory;
+        return categoryRepository.save(newcategory);
     }
 
     @Override
