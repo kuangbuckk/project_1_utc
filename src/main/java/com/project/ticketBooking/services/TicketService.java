@@ -42,10 +42,13 @@ public class TicketService implements ITicketService {
         TicketCategory ticketCategory = ticketCategoryRepository.findById(ticketDTO.getTicketCategoryId())
                 .orElseThrow(() -> new DataNotFoundException("Ticket Category not found"));
 
+        //Check remaining tickets then decrement
         int remainingTickets = ticketRepository.getRemainingTicketsByTicketCategoryId(ticketDTO.getTicketCategoryId());
         if (remainingTickets <= 0) {
             throw new Exception("No remaining tickets for this category. Please try another category");
         }
+        ticketCategory.setRemainingCount(remainingTickets - 1);
+        ticketCategoryRepository.save(ticketCategory);
 
         Ticket ticket = Ticket.builder()
                 .ticketCategory(ticketCategory)

@@ -64,7 +64,9 @@ public class TicketCategoryService implements ITicketCategoryService {
     }
 
     @Override
-    public List<TicketCategory> getTicketCategoriesByEventId(Long eventId) {
+    public List<TicketCategory> getTicketCategoriesByEventId(Long eventId) throws DataNotFoundException {
+        Event existingEvent = eventRepository.findById(eventId)
+                .orElseThrow(() -> new DataNotFoundException("Event not found"));
         return ticketCategoryRepository.findByEventId(eventId);
     }
 
