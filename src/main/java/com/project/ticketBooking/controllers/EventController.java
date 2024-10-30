@@ -32,7 +32,7 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping("")
-    public ResponseEntity<?> getAllEvents(){
+    public ResponseEntity<?> getAllEvents() {
         List<Event> Events = eventService.getAllEvents();
         return ResponseEntity.ok(Events);
     }
@@ -53,7 +53,7 @@ public class EventController {
     public ResponseEntity<?> insertEvent(
             @Valid @RequestBody EventDTO eventDTO,
             BindingResult result
-    ){
+    ) {
         try {
             if (result.hasErrors()) {
                 List<String> errorMessages = result.getFieldErrors()
@@ -74,25 +74,25 @@ public class EventController {
     public ResponseEntity<?> uploadImages(
             @PathVariable("id") Long eventId,
             @ModelAttribute("files") List<MultipartFile> files
-    ){
+    ) {
         try {
             Event existingEvent = eventService.getEventById(eventId);
             files = files == null ? new ArrayList<MultipartFile>() : files;
-            if(files.size() > EventImage.MAXIMUM_IMAGES_PER_EVENT) {
+            if (files.size() > EventImage.MAXIMUM_IMAGES_PER_EVENT) {
                 return ResponseEntity.badRequest().body("You can only upload maximum 5 images");
             }
             List<EventImage> eventImages = new ArrayList<>();
             for (MultipartFile file : files) {
-                if(file.getSize() == 0) {
+                if (file.getSize() == 0) {
                     continue;
                 }
                 // Kiểm tra kích thước file và định dạng
-                if(file.getSize() > 10 * 1024 * 1024) { // Kích thước > 10MB
+                if (file.getSize() > 10 * 1024 * 1024) { // Kích thước > 10MB
                     return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
                             .body("File is too large! Maximum size is 10MB");
                 }
                 String contentType = file.getContentType();
-                if(contentType == null || !contentType.startsWith("image/")) {
+                if (contentType == null || !contentType.startsWith("image/")) {
                     return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
                             .body("File must be an image");
                 }
@@ -112,6 +112,7 @@ public class EventController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     private String storeFile(MultipartFile file) throws IOException {
         if (!isImageFile(file) || file.getOriginalFilename() == null) {
             throw new IOException("Invalid image format");
@@ -131,6 +132,7 @@ public class EventController {
         Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
         return uniqueFilename;
     }
+
     private boolean isImageFile(MultipartFile file) {
         String contentType = file.getContentType();
         return contentType != null && contentType.startsWith("image/");
@@ -140,7 +142,7 @@ public class EventController {
     public ResponseEntity<?> updateEvent(
             @Valid @PathVariable("id") Long eventId,
             @Valid @RequestBody EventDTO eventDTO
-    ){
+    ) {
         try {
             Event newEvent = eventService.updateEvent(eventId, eventDTO);
             return ResponseEntity.ok(newEvent);
@@ -152,8 +154,18 @@ public class EventController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEvent(
             @Valid @PathVariable("id") Long eventId
-    ){
+    ) {
         eventService.deleteEvent(eventId);
         return ResponseEntity.ok("Event deleted with ID: " + eventId);
+    }
+
+    @GetMapping("/organization/{organizationId}")
+    public ResponseEntity<?> getEventsByOrganizationId(@PathVariable Long organizationId) {
+        try {
+            List<Event> events = eventService.getAllEventsByOrganizationId(organizationId);
+            return ResponseEntity.ok(events);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
     }
 }
