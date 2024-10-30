@@ -35,12 +35,17 @@ public class TicketService implements ITicketService {
     }
 
     @Override
-    public Ticket createTicket(TicketDTO ticketDTO) throws DataNotFoundException {
+    public Ticket createTicket(TicketDTO ticketDTO) throws Exception {
         User existingUser = userRepository.findById(ticketDTO.getUserId())
                 .orElseThrow(() -> new DataNotFoundException("User not found"));
 
         TicketCategory ticketCategory = ticketCategoryRepository.findById(ticketDTO.getTicketCategoryId())
                 .orElseThrow(() -> new DataNotFoundException("Ticket Category not found"));
+
+        int remainingTickets = ticketRepository.getRemainingTicketsByTicketCategoryId(ticketDTO.getTicketCategoryId());
+        if (remainingTickets <= 0) {
+            throw new Exception("No remaining tickets for this category. Please try another category");
+        }
 
         Ticket ticket = Ticket.builder()
                 .ticketCategory(ticketCategory)
@@ -70,5 +75,10 @@ public class TicketService implements ITicketService {
     @Override
     public void deleteTicket(Long ticketId) {
         ticketRepository.deleteById(ticketId);
+    }
+
+    @Override
+    public int getRemainingTicketsByCategoryId(Long ticketCategoryId) {
+        return ticketRepository.getRemainingTicketsByTicketCategoryId(ticketCategoryId);
     }
 }
