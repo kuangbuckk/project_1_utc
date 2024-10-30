@@ -33,6 +33,5 @@ public class TicketCategory extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
-    @Min(value = 1, message = "Event ID must be greater than 0")
     private Event event;
 }

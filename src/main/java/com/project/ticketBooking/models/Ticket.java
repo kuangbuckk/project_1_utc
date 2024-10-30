@@ -21,11 +21,9 @@ public class Ticket extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "ticket_category_id", nullable = false)
-    @Min(value = 1, message = "Ticket category ID must be greater than 0")
     private TicketCategory ticketCategory;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @Min(value = 1, message = "User ID must be greater than 0")
     private User user;
 }

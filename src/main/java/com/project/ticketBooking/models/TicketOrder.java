@@ -21,7 +21,6 @@ public class TicketOrder extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @Min(value = 1, message = "User ID must be greater than 0")
     private User user;
 
     @Column(name = "order_date", columnDefinition = "date default current_timestamp")

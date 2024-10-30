@@ -23,6 +23,5 @@ public class UserAvatar {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
-    @Min(value = 1, message = "User ID must be greater than 0")
     private User user;
 }

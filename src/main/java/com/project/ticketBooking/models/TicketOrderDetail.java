@@ -19,12 +19,10 @@ public class TicketOrderDetail extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "ticket_order_id")
-    @Min(value = 1, message = "Ticket order ID must be greater than 0")
     private TicketOrder ticketOrder;
 
     @ManyToOne
     @JoinColumn(name = "ticket_category_id")
-    @Min(value = 1, message = "Ticket category ID must be greater than 0")
     private TicketCategory ticketCategory;
 
     @Column(name = "number_of_tickets", columnDefinition = "int default null")
