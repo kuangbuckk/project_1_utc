@@ -38,7 +38,7 @@ public class CategoryController {
             return ResponseEntity.badRequest().body(errorMessages);
         }
         Category newCategory = categoryService.createCategory(categoryDTO);
-        return ResponseEntity.ok("Created new category: " + newCategory.getName());
+        return ResponseEntity.ok(newCategory);
     }
 
     @PutMapping("/{id}")
@@ -47,7 +47,7 @@ public class CategoryController {
             @Valid @RequestBody CategoryDTO categoryDTO
     ) throws DataNotFoundException {
         Category updatedCategory = categoryService.updateCategory(categoryId, categoryDTO);
-        return ResponseEntity.ok("Updated category: " + updatedCategory.getName());
+        return ResponseEntity.ok(updatedCategory.getName());
     }
 
     @DeleteMapping("/{id}")
@@ -55,6 +55,6 @@ public class CategoryController {
             @PathVariable("id") Long categoryId
     ) {
         categoryService.deleteCategory(categoryId);
-        return ResponseEntity.ok("Deleted category: " + categoryId);
+        return ResponseEntity.ok(categoryId);
     }
 }
