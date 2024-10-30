@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Data
@@ -13,11 +14,10 @@ import lombok.*;
 @NoArgsConstructor
 public class EventDTO {
     @NotBlank(message = "Event's name can't be empty")
-    @Min(value = 3, message = "Event's name must be over 3 characters")
-    @Max(value = 100, message = "Event's name must be less than 100 characters")
+    @Size(min = 2, max = 200, message = "Name must be between 2 and 200 characters")
     private String name;
 
-    @Max(value = 400, message = "Event's description must be less than 400 characters")
+    @Size(max = 400, message = "Description must be less than 400 characters")
     private String description;
 
     @NotBlank(message = "Event's location can't be empty")
@@ -26,5 +26,4 @@ public class EventDTO {
     @JsonProperty("organization_id")
     @Min(value = 1, message = "Organization's ID must be over 0")
     private Long organizeId;
-
 }

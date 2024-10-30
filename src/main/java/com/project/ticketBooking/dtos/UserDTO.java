@@ -33,6 +33,9 @@ public class UserDTO {
     @JsonProperty("password")
     private String password;
 
+    @JsonProperty("retype_password")
+    private String retypePassword;
+
     @JsonProperty("is_active")
     private Short isActive;
 
