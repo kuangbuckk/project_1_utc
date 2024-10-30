@@ -4,9 +4,11 @@ import com.project.ticketBooking.dtos.EventDTO;
 import com.project.ticketBooking.dtos.EventImageDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.exceptions.InvalidParamException;
+import com.project.ticketBooking.models.Category;
 import com.project.ticketBooking.models.Event;
 import com.project.ticketBooking.models.EventImage;
 import com.project.ticketBooking.models.Organization;
+import com.project.ticketBooking.repositories.CategoryRepository;
 import com.project.ticketBooking.repositories.EventImageRepository;
 import com.project.ticketBooking.repositories.EventRepository;
 import com.project.ticketBooking.repositories.OrganizationRepository;
@@ -21,6 +23,7 @@ public class EventService implements IEventService {
     private final EventRepository eventRepository;
     private final EventImageRepository eventImageRepository;
     private final OrganizationRepository organizationRepository;
+    private final CategoryRepository categoryRepository;
     @Override
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
@@ -37,12 +40,17 @@ public class EventService implements IEventService {
     public Event createEvent(EventDTO eventDTO) throws DataNotFoundException {
         Organization existingOrganization = organizationRepository
                 .findById(eventDTO.getOrganizeId())
-                .orElseThrow(()-> new DataNotFoundException("Can't find organization with ID:"));
+                .orElseThrow(()-> new DataNotFoundException("Can't find organization with ID:" + eventDTO.getOrganizeId()));
+        Category existingCategory = categoryRepository.findById(eventDTO.getCategoryId())
+                .orElseThrow(()-> new DataNotFoundException("Can't find category with ID:" + eventDTO.getCategoryId()));
         Event newEvent = Event.builder()
                 .name(eventDTO.getName())
                 .description(eventDTO.getDescription())
                 .location(eventDTO.getLocation())
-                .organizationId(existingOrganization)
+                .startDate(eventDTO.getStartDate())
+                .endDate(eventDTO.getEndDate())
+                .category(existingCategory)
+                .organization(existingOrganization)
                 .build();
         return eventRepository.save(newEvent);
     }
@@ -55,6 +63,12 @@ public class EventService implements IEventService {
         exisitingEvent.setName(eventDTO.getName());
         exisitingEvent.setDescription(eventDTO.getDescription());
         exisitingEvent.setLocation(eventDTO.getLocation());
+        exisitingEvent.setStartDate(eventDTO.getStartDate());
+        exisitingEvent.setEndDate(eventDTO.getEndDate());
+        //Find category by id
+        Category existingCategory = categoryRepository.findById(eventDTO.getCategoryId())
+                .orElseThrow(()-> new DataNotFoundException("Can't find category with ID:" + eventDTO.getCategoryId()));
+        exisitingEvent.setCategory(existingCategory);
         //exclude organization reference
         return eventRepository.save(exisitingEvent);
     }
@@ -87,9 +101,6 @@ public class EventService implements IEventService {
 
     @Override
     public List<Event> getAllEventsByOrganizationId(Long organizationId) throws DataNotFoundException {
-        Organization existingOrganization = organizationRepository
-                .findById(organizationId)
-                .orElseThrow(()-> new DataNotFoundException("Can't find organization with ID:"));
-        return eventRepository.findByOrganizationId(existingOrganization);
+        return eventRepository.findByOrganizationId(organizationId);
     }
 }
