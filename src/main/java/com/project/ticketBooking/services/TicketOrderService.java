@@ -10,6 +10,7 @@ import com.project.ticketBooking.repositories.UserRepository;
 import com.project.ticketBooking.services.interfaces.ITicketOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,37 +27,40 @@ public class TicketOrderService implements ITicketOrderService {
     }
 
     @Override
-public TicketOrder createTicketOrder(TicketOrderDTO ticketOrderDTO) throws DataNotFoundException {
-    User existingUser = userRepository.findById(ticketOrderDTO.getUserId())
-            .orElseThrow(() -> new DataNotFoundException("User not found"));
+    @Transactional
+    public TicketOrder createTicketOrder(TicketOrderDTO ticketOrderDTO) throws DataNotFoundException {
+        User existingUser = userRepository.findById(ticketOrderDTO.getUserId())
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
 
-    TicketOrder ticketOrder = TicketOrder.builder()
-            .user(existingUser)
-            .orderDate(ticketOrderDTO.getOrderDate())
-            .totalMoney(ticketOrderDTO.getTotalMoney())
-            .paymentMethod(ticketOrderDTO.getPaymentMethod())
-            .paymentStatus(ticketOrderDTO.getPaymentStatus())
-            .build();
-    return ticketOrderRepository.save(ticketOrder);
-}
-
-@Override
-public TicketOrder updateTicketOrder(Long id, TicketOrderDTO ticketOrderDTO) throws DataNotFoundException {
-    TicketOrder ticketOrder = ticketOrderRepository.findById(id)
-            .orElseThrow(() -> new DataNotFoundException("Ticket Order not found"));
-
-    User existingUser = userRepository.findById(ticketOrderDTO.getUserId())
-            .orElseThrow(() -> new DataNotFoundException("User not found"));
-
-    ticketOrder.setUser(existingUser);
-    ticketOrder.setOrderDate(ticketOrderDTO.getOrderDate());
-    ticketOrder.setTotalMoney(ticketOrderDTO.getTotalMoney());
-    ticketOrder.setPaymentMethod(ticketOrderDTO.getPaymentMethod());
-    ticketOrder.setPaymentStatus(ticketOrderDTO.getPaymentStatus());
-    return ticketOrderRepository.save(ticketOrder);
-}
+        TicketOrder ticketOrder = TicketOrder.builder()
+                .user(existingUser)
+                .orderDate(ticketOrderDTO.getOrderDate())
+                .totalMoney(ticketOrderDTO.getTotalMoney())
+                .paymentMethod(ticketOrderDTO.getPaymentMethod())
+                .paymentStatus(ticketOrderDTO.getPaymentStatus())
+                .build();
+        return ticketOrderRepository.save(ticketOrder);
+    }
 
     @Override
+    @Transactional
+    public TicketOrder updateTicketOrder(Long id, TicketOrderDTO ticketOrderDTO) throws DataNotFoundException {
+        TicketOrder ticketOrder = ticketOrderRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Ticket Order not found"));
+
+        User existingUser = userRepository.findById(ticketOrderDTO.getUserId())
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+
+        ticketOrder.setUser(existingUser);
+        ticketOrder.setOrderDate(ticketOrderDTO.getOrderDate());
+        ticketOrder.setTotalMoney(ticketOrderDTO.getTotalMoney());
+        ticketOrder.setPaymentMethod(ticketOrderDTO.getPaymentMethod());
+        ticketOrder.setPaymentStatus(ticketOrderDTO.getPaymentStatus());
+        return ticketOrderRepository.save(ticketOrder);
+    }
+
+    @Override
+    @Transactional
     public void deleteTicketOrder(Long id) {
         ticketOrderRepository.deleteById(id);
     }

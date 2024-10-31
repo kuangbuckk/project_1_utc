@@ -13,6 +13,7 @@ import com.project.ticketBooking.repositories.UserRepository;
 import com.project.ticketBooking.services.interfaces.ITicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class TicketService implements ITicketService {
     }
 
     @Override
+    @Transactional
     public Ticket createTicket(TicketDTO ticketDTO) throws Exception {
         User existingUser = userRepository.findById(ticketDTO.getUserId())
                 .orElseThrow(() -> new DataNotFoundException("User not found"));
@@ -78,6 +80,13 @@ public class TicketService implements ITicketService {
     @Override
     public void deleteTicket(Long ticketId) {
         ticketRepository.deleteById(ticketId);
+    }
+
+    @Override
+    public List<Ticket> getTicketByUserId(Long userId) throws DataNotFoundException {
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+        return ticketRepository.findAllByUserId(userId);
     }
 
     @Override
