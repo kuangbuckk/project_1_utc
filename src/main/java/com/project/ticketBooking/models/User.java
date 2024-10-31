@@ -3,8 +3,14 @@ package com.project.ticketBooking.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -13,7 +19,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User {
+public class User extends BaseEntity implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,14 +42,8 @@ public class User {
     @Column(name = "password", length = 200, nullable = false, columnDefinition = "varchar(200) default ''")
     private String password;
 
-    @Column(name = "created_at", columnDefinition = "timestamp default current_timestamp")
-    private LocalDate createdAt;
-
-    @Column(name = "updated_at", columnDefinition = "timestamp default current_timestamp")
-    private LocalDate updatedAt;
-
-    @Column(name = "is_active", columnDefinition = "smallint default 1")
-    private Short isActive;
+    @Column(name = "is_active", columnDefinition = "int default 1")
+    private Integer isActive;
 
     @Column(name = "date_of_birth", columnDefinition = "date")
     private LocalDate dateOfBirth;
@@ -55,8 +55,43 @@ public class User {
     private Integer googleAccountId;
 
     @NotNull(message = "Role ID cannot be null")
-    @Min(value = 1, message = "Role ID must be greater than 0")
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
+        authorityList.add(new SimpleGrantedAuthority("ROLE_"+getRole().getName()));
+        return authorityList;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public int isActive() {
+        return this.isActive;
+    }
 }

@@ -51,5 +51,5 @@ public class UserDTO {
     @NotNull(message = "Role ID cannot be null")
     @JsonProperty("role_id")
     @Min(value = 1, message = "Role ID must be greater than 0")
-    private Integer roleId;
+    private Long roleId;
 }
