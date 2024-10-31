@@ -20,11 +20,11 @@ import java.util.List;
 public class TicketController {
     private final ITicketService ticketService;
 
-    @GetMapping("")
-    public ResponseEntity<List<Ticket>> getAllTickets() {
-        List<Ticket> tickets = ticketService.getTicketsByTicketCategoryId(null);
-        return ResponseEntity.ok(tickets);
-    }
+//    @GetMapping("")
+//    public ResponseEntity<List<Ticket>> getAllTickets() {
+//        List<Ticket> tickets = ticketService.getTicketsByTicketCategoryId(null);
+//        return ResponseEntity.ok(tickets);
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Ticket> getTicketById(@PathVariable Long id) throws DataNotFoundException {
@@ -72,6 +72,16 @@ public class TicketController {
         try {
             ticketService.deleteTicket(ticketId);
             return ResponseEntity.ok("Deleted ticket with ID: " + ticketId);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getTicketsByUserId(@PathVariable Long userId) {
+        try {
+            List<Ticket> tickets = ticketService.getTicketByUserId(userId);
+            return ResponseEntity.ok(tickets);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
