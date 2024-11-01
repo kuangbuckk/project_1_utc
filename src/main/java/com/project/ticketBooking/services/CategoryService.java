@@ -26,6 +26,7 @@ public class CategoryService implements ICategoryService {
                 .orElseThrow(()-> new DataNotFoundException("Cant find category with id: " + categoryId));
     }
 
+
     @Override
     public Category createCategory(CategoryDTO categoryDTO) {
         Category newcategory = Category.builder()
