@@ -18,4 +18,5 @@ public interface IEventService {
 
     EventImage createEventImage(Long eventId, EventImageDTO eventImageDTO) throws Exception;
     List<Event> getAllEventsByOrganizationId(Long organizationId) throws DataNotFoundException;
+    List<Event> getAllEventsByCategoryId(Long categoryId) throws DataNotFoundException;
 }

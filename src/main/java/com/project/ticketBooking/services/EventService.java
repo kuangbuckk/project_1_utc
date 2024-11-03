@@ -103,4 +103,8 @@ public class EventService implements IEventService {
     public List<Event> getAllEventsByOrganizationId(Long organizationId) throws DataNotFoundException {
         return eventRepository.findByOrganizationId(organizationId);
     }
+
+    @Override
+    public List<Event> getAllEventsByCategoryId(Long categoryId) throws DataNotFoundException
+        return eventRepository.findByCategoryId(categoryId);
 }
