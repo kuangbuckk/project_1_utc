@@ -3,6 +3,7 @@ package com.project.ticketBooking.controllers;
 import com.project.ticketBooking.dtos.CategoryDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.models.Category;
+import com.project.ticketBooking.models.Event;
 import com.project.ticketBooking.services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,18 @@ public class CategoryController {
     public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCategoryById(
+            @Valid @PathVariable("id") Long categoryId
+    ) {
+        try {
+            Category existingCategory = categoryService.getCategoryById(categoryId);
+            return ResponseEntity.ok(existingCategory);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("")
