@@ -166,7 +166,17 @@ public class EventController {
             List<Event> events = eventService.getAllEventsByOrganizationId(organizationId);
             return ResponseEntity.ok(events);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<?> getEventsByCategoryId(@PathVariable Long categoryId) {
+        try {
+            List<Event> events = eventService.getAllEventsByCategoryId(categoryId);
+            return ResponseEntity.ok(events);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

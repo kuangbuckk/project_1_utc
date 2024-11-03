@@ -105,6 +105,7 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public List<Event> getAllEventsByCategoryId(Long categoryId) throws DataNotFoundException
+    public List<Event> getAllEventsByCategoryId(Long categoryId) throws DataNotFoundException {
         return eventRepository.findByCategoryId(categoryId);
+    }
 }
