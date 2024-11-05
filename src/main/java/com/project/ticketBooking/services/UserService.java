@@ -70,6 +70,20 @@ public class UserService implements IUserService{
     }
 
     @Override
+    public User getUserDetailsFromToken(String token) throws Exception {
+//        if (!jwtTokenUtil.va(token)) {
+//            throw new DataNotFoundException("Token is expired");
+//        }
+        String email = jwtTokenUtil.extractEmail(token);
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        } else {
+            throw new DataNotFoundException("User not found");
+        }
+    }
+
+    @Override
     public String login(String email, String password, Long roleId) throws Exception {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if(optionalUser.isEmpty()) {

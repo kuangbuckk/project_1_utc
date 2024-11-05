@@ -5,16 +5,14 @@ import com.project.ticketBooking.dtos.UserLoginDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.models.User;
 import com.project.ticketBooking.responses.LoginResponse;
+import com.project.ticketBooking.responses.UserResponse;
 import com.project.ticketBooking.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -51,11 +49,26 @@ public class UserController {
             @Valid @RequestBody UserLoginDTO userLoginDTO) throws DataNotFoundException {
         try {
             // Kiểm tra thông tin đăng nhập và sinh token
-            String token = userService.login(userLoginDTO.getEmail(), userLoginDTO.getPassword(), userLoginDTO.getRoleId());
+            String token = userService.login(
+                    userLoginDTO.getEmail(),
+                    userLoginDTO.getPassword(),
+                    userLoginDTO.getRoleId() == null ? 1 : userLoginDTO.getRoleId());
             return ResponseEntity.ok(LoginResponse.builder()
                     .message("Đăng nhập thành công")
                     .token(token)
                     .build());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/details")
+    public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String token) {
+        try {
+            // Kiểm tra thông tin đăng nhập và sinh token
+            String extractedToken = token.substring(7);
+            User user = userService.getUserDetailsFromToken(extractedToken);
+            return ResponseEntity.ok(UserResponse.fromUser(user));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
