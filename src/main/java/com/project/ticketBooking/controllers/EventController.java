@@ -4,9 +4,15 @@ import com.project.ticketBooking.dtos.EventDTO;
 import com.project.ticketBooking.dtos.EventImageDTO;
 import com.project.ticketBooking.models.Event;
 import com.project.ticketBooking.models.EventImage;
+import com.project.ticketBooking.responses.EventListResponse;
+import com.project.ticketBooking.responses.EventResponse;
 import com.project.ticketBooking.services.EventService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +38,23 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping("")
-    public ResponseEntity<?> getAllEvents() {
-        List<Event> Events = eventService.getAllEvents();
-        return ResponseEntity.ok(Events);
+    public ResponseEntity<?> getAllEvents(
+            @RequestParam("page")     int page,
+            @RequestParam("limit")    int limit
+    ) {
+        // Tạo Pageable từ thông tin trang và giới hạn
+        PageRequest pageRequest = PageRequest.of(
+                page, limit,
+                Sort.by("createdAt").descending());
+        Page<EventResponse> productPage = eventService.getAllEvents(pageRequest);
+        // Lấy tổng số trang
+        int totalPages = productPage.getTotalPages();
+        List<EventResponse> eventResponses = productPage.getContent();
+        return ResponseEntity.ok(EventListResponse
+                .builder()
+                .events(eventResponses)
+                .totalPages(totalPages)
+                .build());
     }
 
     @GetMapping("/{id}")
@@ -43,7 +63,7 @@ public class EventController {
     ) {
         try {
             Event exisitingEvent = eventService.getEventById(eventId);
-            return ResponseEntity.ok(exisitingEvent);
+            return ResponseEntity.ok(EventResponse.fromEvent(exisitingEvent));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -158,6 +178,26 @@ public class EventController {
     ) {
         eventService.deleteEvent(eventId);
         return ResponseEntity.ok("Event deleted with ID: " + eventId);
+    }
+
+    @GetMapping("/images/{imageName}")
+    public ResponseEntity<?> viewImage(@PathVariable String imageName) {
+        try {
+            java.nio.file.Path imagePath = Paths.get("uploads/"+imageName);
+            UrlResource resource = new UrlResource(imagePath.toUri());
+
+            if (resource.exists()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(resource);
+            } else {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(new UrlResource(Paths.get("uploads/notfound.jpg").toUri()));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/organization/{organizationId}")

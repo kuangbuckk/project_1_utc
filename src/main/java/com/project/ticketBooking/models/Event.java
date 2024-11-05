@@ -28,6 +28,9 @@ public class Event extends BaseEntity{
     @Column(name = "description")
     private String description;
 
+    @Column(name = "thumbnail")
+    private String thumbnail;
+
     @Column(name = "location", nullable = false)
     private String location;
 

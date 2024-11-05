@@ -12,8 +12,11 @@ import com.project.ticketBooking.repositories.CategoryRepository;
 import com.project.ticketBooking.repositories.EventImageRepository;
 import com.project.ticketBooking.repositories.EventRepository;
 import com.project.ticketBooking.repositories.OrganizationRepository;
+import com.project.ticketBooking.responses.EventResponse;
 import com.project.ticketBooking.services.interfaces.IEventService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,9 +27,11 @@ public class EventService implements IEventService {
     private final EventImageRepository eventImageRepository;
     private final OrganizationRepository organizationRepository;
     private final CategoryRepository categoryRepository;
+
     @Override
-    public List<Event> getAllEvents() {
-        return eventRepository.findAll();
+    public Page<EventResponse> getAllEvents(PageRequest pageRequest) {
+        return eventRepository.findAll(pageRequest)
+                .map(EventResponse::fromEvent);
     }
 
     @Override

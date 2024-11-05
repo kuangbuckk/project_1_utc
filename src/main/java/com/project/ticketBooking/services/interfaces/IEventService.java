@@ -6,11 +6,14 @@ import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.exceptions.InvalidParamException;
 import com.project.ticketBooking.models.Event;
 import com.project.ticketBooking.models.EventImage;
+import com.project.ticketBooking.responses.EventResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
 public interface IEventService {
-    List<Event> getAllEvents(); //add paging later
+    Page<EventResponse> getAllEvents(PageRequest pageRequest); //add paging later
     Event getEventById(Long eventId) throws DataNotFoundException;
     Event createEvent(EventDTO eventDTO) throws DataNotFoundException;
     Event updateEvent(Long eventId, EventDTO eventDTO) throws DataNotFoundException;
