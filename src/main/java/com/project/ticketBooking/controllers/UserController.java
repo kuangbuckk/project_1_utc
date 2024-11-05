@@ -4,6 +4,7 @@ import com.project.ticketBooking.dtos.UserDTO;
 import com.project.ticketBooking.dtos.UserLoginDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.models.User;
+import com.project.ticketBooking.responses.LoginResponse;
 import com.project.ticketBooking.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,12 +47,15 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(
+    public ResponseEntity<?> login(
             @Valid @RequestBody UserLoginDTO userLoginDTO) throws DataNotFoundException {
         try {
             // Kiểm tra thông tin đăng nhập và sinh token
             String token = userService.login(userLoginDTO.getEmail(), userLoginDTO.getPassword(), userLoginDTO.getRoleId());
-            return ResponseEntity.ok(token);
+            return ResponseEntity.ok(LoginResponse.builder()
+                    .message("Đăng nhập thành công")
+                    .token(token)
+                    .build());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

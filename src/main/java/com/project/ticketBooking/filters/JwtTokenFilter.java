@@ -1,6 +1,7 @@
 package com.project.ticketBooking.filters;
 
 import com.project.ticketBooking.component.JwtTokenUtils;
+import com.project.ticketBooking.models.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +29,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Value("${api.prefix}")
     private String apiPrefix;
 
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final JwtTokenUtils jwtTokenUtil;
 
     @Override
@@ -37,30 +38,32 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            if (isBypassToken(request)) {
+;            if (isBypassToken(request)) {
                 filterChain.doFilter(request, response);
                 return;
             }
             final String authHeader = request.getHeader("Authorization");
-            if (authHeader.startsWith("Bearer ")) {
-                final String token = authHeader.substring(7);
-                final String email = jwtTokenUtil.extractEmail(token);
-                if  (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                    if(jwtTokenUtil.validateToken(token, userDetails)) {
-                        UsernamePasswordAuthenticationToken authenticationToken =
-                                new UsernamePasswordAuthenticationToken(
+            if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                return;
+            }
+            final String token = authHeader.substring(7);
+            final String email = jwtTokenUtil.extractEmail(token);
+            if  (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                User userDetails = (User) userDetailsService.loadUserByUsername(email);
+                if(jwtTokenUtil.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(
                                         userDetails,
                                         null,
                                         userDetails.getAuthorities()
-                                );
-                        //Perform authentication
-                        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    }
+                            );
+                    //Perform authentication
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
-                filterChain.doFilter(request, response);
             }
+            filterChain.doFilter(request, response);
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
         }
