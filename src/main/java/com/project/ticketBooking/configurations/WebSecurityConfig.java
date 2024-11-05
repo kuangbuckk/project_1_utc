@@ -17,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +26,7 @@ import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
@@ -94,9 +96,9 @@ public class WebSecurityConfig {
 
                             //tickets
                             .requestMatchers(GET,
-                                    String.format("%s/tickets/**", apiPrefix)).permitAll()
+                                    String.format("%s/tickets/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
                             .requestMatchers(POST,
-                                    String.format("%s/tickets?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/tickets?**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
                             .requestMatchers(PUT,
                                     String.format("%s/tickets?**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(DELETE,
@@ -104,9 +106,9 @@ public class WebSecurityConfig {
 
                             //ticket orders
                             .requestMatchers(GET,
-                                    String.format("%s/ticketOrders/**", apiPrefix)).permitAll()
+                                    String.format("%s/ticketOrders/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
                             .requestMatchers(POST,
-                                    String.format("%s/ticketOrders?**", apiPrefix)).permitAll()
+                                    String.format("%s/ticketOrders?**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
                             .requestMatchers(PUT,
                                     String.format("%s/ticketOrders?**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(DELETE,
@@ -114,7 +116,7 @@ public class WebSecurityConfig {
 
                             //ticket order details
                             .requestMatchers(GET,
-                                    String.format("%s/ticketOrders/**", apiPrefix)).permitAll()
+                                    String.format("%s/ticketOrders/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
                             .requestMatchers(POST,
                                     String.format("%s/ticketOrders?**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(PUT,
