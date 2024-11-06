@@ -3,6 +3,7 @@ package com.project.ticketBooking.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -21,7 +22,7 @@ public class UserDTO {
     @JsonProperty("phone_number")
     private String phoneNumber;
 
-    @NotNull(message = "Email cannot be null")
+    @NotBlank(message = "Email cannot be null")
     @Email(message = "Email should be valid")
     @JsonProperty("email")
     private String email;
@@ -29,7 +30,7 @@ public class UserDTO {
     @JsonProperty("address")
     private String address;
 
-    @NotNull(message = "Password cannot be null")
+    @NotBlank(message = "Password cannot be null")
     @JsonProperty("password")
     private String password;
 
