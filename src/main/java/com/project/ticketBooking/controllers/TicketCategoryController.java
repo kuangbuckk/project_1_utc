@@ -2,6 +2,7 @@ package com.project.ticketBooking.controllers;
 
 import com.project.ticketBooking.dtos.TicketCategoryDTO;
 import com.project.ticketBooking.models.TicketCategory;
+import com.project.ticketBooking.responses.TicketCategoryResponse;
 import com.project.ticketBooking.services.interfaces.ITicketCategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -87,7 +88,10 @@ public class TicketCategoryController {
     ) {
         try {
             List<TicketCategory> ticketCategories = ticketCategoryService.getTicketCategoriesByEventId(eventId);
-            return ResponseEntity.ok(ticketCategories);
+            List<TicketCategoryResponse> ticketCategoriesResponses = ticketCategories.stream()
+                    .map(TicketCategoryResponse::fromTicketCategory)
+                    .toList();
+            return ResponseEntity.ok(ticketCategoriesResponses);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
