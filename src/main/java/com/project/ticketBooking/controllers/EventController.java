@@ -211,10 +211,47 @@ public class EventController {
     }
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<?> getEventsByCategoryId(@PathVariable Long categoryId) {
+    public ResponseEntity<?> getEventsByCategoryId(
+            @PathVariable Long categoryId,
+            @RequestParam("page") int page,
+            @RequestParam("limit") int limit
+    ) {
         try {
-            List<Event> events = eventService.getAllEventsByCategoryId(categoryId);
-            return ResponseEntity.ok(events);
+            PageRequest pageRequest = PageRequest.of(
+                    page, limit,
+                    Sort.by("createdAt").descending());
+            Page<EventResponse> eventPage = eventService.getAllEventsByCategoryId(categoryId, pageRequest);
+            int totalPages = eventPage.getTotalPages();
+            List<EventResponse> eventResponses = eventPage.getContent();
+            return ResponseEntity.ok(EventListResponse
+                    .builder()
+                    .events(eventResponses)
+                    .totalPages(totalPages)
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchByKeyword(
+            @RequestParam("keyword") String keyword,
+            @RequestParam("page") int page,
+            @RequestParam("limit") int limit) {
+
+        try {
+            PageRequest pageRequest = PageRequest.of(
+                    page, limit,
+                    Sort.by("createdAt").descending());
+            Page<EventResponse> eventPage = eventService.searchByKeyword(keyword, pageRequest);
+            // Lấy tổng số trang
+            int totalPages = eventPage.getTotalPages();
+            List<EventResponse> eventResponses = eventPage.getContent();
+            return ResponseEntity.ok(EventListResponse
+                    .builder()
+                    .events(eventResponses)
+                    .totalPages(totalPages)
+                    .build());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -110,7 +110,14 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public List<Event> getAllEventsByCategoryId(Long categoryId) throws DataNotFoundException {
-        return eventRepository.findByCategoryId(categoryId);
+    public Page<EventResponse> getAllEventsByCategoryId(Long categoryId, PageRequest pageRequest) throws DataNotFoundException {
+        return eventRepository.findByCategoryId(categoryId, pageRequest)
+                .map(EventResponse::fromEvent);
+    }
+
+    @Override
+    public Page<EventResponse> searchByKeyword(String keyword, PageRequest pageRequest) {
+        return eventRepository.searchByKeyword(keyword, pageRequest)
+                .map(EventResponse::fromEvent);
     }
 }
