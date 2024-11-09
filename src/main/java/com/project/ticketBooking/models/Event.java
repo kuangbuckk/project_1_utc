@@ -1,10 +1,7 @@
 package com.project.ticketBooking.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,6 +14,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
+@EntityListeners(com.project.ticketBooking.models.EventListener.class)
 public class Event extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

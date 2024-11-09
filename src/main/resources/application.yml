@@ -22,4 +22,3 @@ spring:
       host: localhost
       port: 6379
 api:
-  prefix: api/v1
