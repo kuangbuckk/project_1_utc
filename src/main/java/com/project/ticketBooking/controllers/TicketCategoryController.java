@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -31,7 +32,25 @@ public class TicketCategoryController {
     ) {
         try {
             TicketCategory ticketCategory = ticketCategoryService.getTicketCategoryById(ticketCategoryId);
-            return ResponseEntity.ok(ticketCategory);
+            return ResponseEntity.ok(TicketCategoryResponse.fromTicketCategory(ticketCategory));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/by-ids")
+    public ResponseEntity<?> getTicketCategoriesByIds(
+            @RequestParam("ids") String ids
+    ) {
+        try {
+            List<Long> ticketCategoryIds = Arrays.stream(ids.split(","))
+                    .map(Long::parseLong)
+                    .toList();
+            List<TicketCategory> ticketCategories = ticketCategoryService.getTicketCategoriesByIds(ticketCategoryIds);
+            List<TicketCategoryResponse> ticketCategoriesResponses = ticketCategories.stream()
+                    .map(TicketCategoryResponse::fromTicketCategory)
+                    .toList();
+            return ResponseEntity.ok(ticketCategoriesResponses);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
