@@ -56,11 +56,11 @@ public class WebSecurityConfig {
                             .requestMatchers(GET,
                                     String.format("%s/categories/**", apiPrefix)).permitAll()
                             .requestMatchers(POST,
-                                    String.format("%s/categories?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/categories/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(PUT,
-                                    String.format("%s/categories?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/categories/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(DELETE,
-                                    String.format("%s/categories?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/categories/**", apiPrefix)).hasRole(Role.ADMIN)
 
                             //events
                             .requestMatchers(GET,
@@ -78,51 +78,51 @@ public class WebSecurityConfig {
                             .requestMatchers(GET,
                                     String.format("%s/organizations/**", apiPrefix)).permitAll()
                             .requestMatchers(POST,
-                                    String.format("%s/organizations?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/organizations/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(PUT,
-                                    String.format("%s/organizations?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/organizations/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(DELETE,
-                                    String.format("%s/organizations?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/organizations/**", apiPrefix)).hasRole(Role.ADMIN)
 
                             //ticket categories
                             .requestMatchers(GET,
                                     String.format("%s/ticketCategories/**", apiPrefix)).permitAll()
                             .requestMatchers(POST,
-                                    String.format("%s/ticketCategories?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/ticketCategories/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(PUT,
-                                    String.format("%s/ticketCategories?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/ticketCategories/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(DELETE,
-                                    String.format("%s/ticketCategories?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/ticketCategories/**", apiPrefix)).hasRole(Role.ADMIN)
 
                             //tickets
                             .requestMatchers(GET,
                                     String.format("%s/tickets/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
                             .requestMatchers(POST,
-                                    String.format("%s/tickets?**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
+                                    String.format("%s/tickets/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
                             .requestMatchers(PUT,
-                                    String.format("%s/tickets?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/tickets/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(DELETE,
-                                    String.format("%s/tickets?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/tickets/**", apiPrefix)).hasRole(Role.ADMIN)
 
                             //ticket orders
                             .requestMatchers(GET,
                                     String.format("%s/ticketOrders/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
                             .requestMatchers(POST,
-                                    String.format("%s/ticketOrders?**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
+                                    String.format("%s/ticketOrders/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
                             .requestMatchers(PUT,
-                                    String.format("%s/ticketOrders?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/ticketOrders/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(DELETE,
-                                    String.format("%s/ticketOrders?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/ticketOrders/**", apiPrefix)).hasRole(Role.ADMIN)
 
                             //ticket order details
                             .requestMatchers(GET,
                                     String.format("%s/ticketOrders/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
                             .requestMatchers(POST,
-                                    String.format("%s/ticketOrders?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/ticketOrders/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(PUT,
-                                    String.format("%s/ticketOrders?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/ticketOrders/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(DELETE,
-                                    String.format("%s/ticketOrders?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/ticketOrders/**", apiPrefix)).hasRole(Role.ADMIN)
 
                             //any request
                             .anyRequest().authenticated();
