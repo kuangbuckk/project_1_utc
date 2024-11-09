@@ -1,11 +1,13 @@
 package com.project.ticketBooking.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.ticketBooking.dtos.EventDTO;
 import com.project.ticketBooking.dtos.EventImageDTO;
 import com.project.ticketBooking.models.Event;
 import com.project.ticketBooking.models.EventImage;
 import com.project.ticketBooking.responses.EventListResponse;
 import com.project.ticketBooking.responses.EventResponse;
+import com.project.ticketBooking.services.EventRedisService;
 import com.project.ticketBooking.services.EventService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -30,31 +32,42 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("${api.prefix}/events")
 @AllArgsConstructor
 public class EventController {
     private final EventService eventService;
+    private final EventRedisService eventRedisService;
+    private final Logger logger = Logger.getLogger(EventController.class.getName());
 
     @GetMapping("")
     public ResponseEntity<?> getAllEvents(
             @RequestParam("page")     int page,
             @RequestParam("limit")    int limit
-    ) {
+    ) throws JsonProcessingException {
+        int totalPages = 0;
         // Tạo Pageable từ thông tin trang và giới hạn
         PageRequest pageRequest = PageRequest.of(
                 page, limit,
-                Sort.by("createdAt").descending());
-        Page<EventResponse> productPage = eventService.getAllEvents(pageRequest);
-        // Lấy tổng số trang
-        int totalPages = productPage.getTotalPages();
-        List<EventResponse> eventResponses = productPage.getContent();
+                Sort.by("id").descending()
+        );
+        logger.info(String.format("page = %d, limit = %d", page, limit));
+        List<EventResponse> eventResponses = eventRedisService.getAllEvents(pageRequest);
+        if (eventResponses == null) {
+            Page<EventResponse> productPage = eventService.getAllEvents(pageRequest);
+            // Lấy tổng số trang
+            totalPages = productPage.getTotalPages();
+            eventResponses = productPage.getContent();
+            eventRedisService.saveAllEvents(eventResponses, pageRequest);
+        }
         return ResponseEntity.ok(EventListResponse
                 .builder()
                 .events(eventResponses)
                 .totalPages(totalPages)
-                .build());
+                .build()
+        );
     }
 
     @GetMapping("/{id}")
