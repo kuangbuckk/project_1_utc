@@ -71,6 +71,11 @@ public class TicketCategoryService implements ITicketCategoryService {
     }
 
     @Override
+    public List<TicketCategory> getTicketCategoriesByIds(List<Long> ticketCategoryIds) {
+        return ticketCategoryRepository.findTicketCategoriesByIds(ticketCategoryIds);
+    }
+
+    @Override
     public boolean hasAvailableTickets(Long categoryId) {
         return ticketCategoryRepository.existsByIdAndRemainingCountGreaterThan(categoryId, 0);
     }
