@@ -2,6 +2,7 @@ package com.project.ticketBooking.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketCategoryDTO {
-    @NotNull(message = "Category name cannot be null")
+    @NotBlank(message = "Category name cannot be null")
     @JsonProperty("category_name")
     private String categoryName;
 
