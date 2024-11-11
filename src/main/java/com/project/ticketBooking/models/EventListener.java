@@ -11,6 +11,7 @@ public class EventListener {
     private final IEventRedisService eventRedisService;
     private static final Logger logger = LoggerFactory.getLogger(EventListener.class);
 
+    // neu co du lieu moi thi phai xoa cache
     @PrePersist
     public void postPersist(Event event) {
         logger.info("Event with id {} is created", event.getId());
