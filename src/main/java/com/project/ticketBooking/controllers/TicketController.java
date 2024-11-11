@@ -8,6 +8,7 @@ import com.project.ticketBooking.services.interfaces.ITicketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +28,14 @@ public class TicketController {
 //    }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Ticket> getTicketById(@PathVariable Long id) throws DataNotFoundException {
         Ticket ticket = ticketService.getTicketById(id);
         return ResponseEntity.ok(ticket);
     }
 
     @PostMapping("")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> createTicket(
             @Valid @RequestBody TicketDTO ticketDTO,
             BindingResult result
@@ -53,6 +56,7 @@ public class TicketController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateTicket(
             @PathVariable("id") Long ticketId,
             @Valid @RequestBody TicketDTO ticketDTO
@@ -66,6 +70,7 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteTicket(
             @PathVariable("id") Long ticketId
     ) {
@@ -78,6 +83,7 @@ public class TicketController {
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getTicketsByUserId(@PathVariable Long userId) {
         try {
             List<Ticket> tickets = ticketService.getTicketByUserId(userId);

@@ -6,6 +6,7 @@ import com.project.ticketBooking.services.OrganizationService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,7 @@ public class OrganizationController {
     }
 
     @PostMapping("")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> insertOrganization(
             @Valid @RequestBody OrganizationDTO organizationDTO,
             BindingResult result
@@ -57,6 +59,7 @@ public class OrganizationController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateOrganization(
             @Valid @PathVariable("id") Long organizationId,
             @Valid @RequestBody OrganizationDTO organizationDTO
@@ -70,6 +73,7 @@ public class OrganizationController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteOrganization(
             @Valid @PathVariable("id") Long organizationId
     ){

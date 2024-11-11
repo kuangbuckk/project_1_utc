@@ -7,6 +7,7 @@ import com.project.ticketBooking.services.interfaces.ITicketCategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +58,7 @@ public class TicketCategoryController {
     }
 
     @PostMapping("")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> createTicketCategory(
             @Valid @RequestBody TicketCategoryDTO ticketCategoryDTO,
             BindingResult result
@@ -77,6 +79,7 @@ public class TicketCategoryController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateTicketCategory(
             @PathVariable("id") Long ticketCategoryId,
             @Valid @RequestBody TicketCategoryDTO ticketCategoryDTO
@@ -90,6 +93,7 @@ public class TicketCategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteTicketCategory(
             @PathVariable("id") Long ticketCategoryId
     ) {

@@ -8,6 +8,7 @@ import com.project.ticketBooking.services.interfaces.ITicketOrderDetailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +22,14 @@ public class TicketOrderDetailController {
     private final ITicketOrderDetailService ticketOrderDetailService;
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<TicketOrderDetail> getTicketOrderDetailById(@PathVariable Long id) throws DataNotFoundException {
         TicketOrderDetail ticketOrderDetail = ticketOrderDetailService.getTicketOrderDetailById(id);
         return ResponseEntity.ok(ticketOrderDetail);
     }
 
     @PostMapping("")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> createTicketOrderDetail(
             @Valid @RequestBody TicketOrderDetailDTO ticketOrderDetailDTO,
             BindingResult result
@@ -47,6 +50,7 @@ public class TicketOrderDetailController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateTicketOrderDetail(
             @PathVariable("id") Long ticketOrderDetailId,
             @Valid @RequestBody TicketOrderDetailDTO ticketOrderDetailDTO
@@ -60,6 +64,7 @@ public class TicketOrderDetailController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteTicketOrderDetail(
             @PathVariable("id") Long ticketOrderDetailId
     ) {
