@@ -68,11 +68,13 @@ public class WebSecurityConfig {
                             .requestMatchers(GET,
                                     String.format("%s/events/images/*", apiPrefix)).permitAll()
                             .requestMatchers(POST,
-                                    String.format("%s/events?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/events/**", apiPrefix)).hasRole(Role.ADMIN)
+                            .requestMatchers(POST,
+                                    String.format("%s/events/uploads/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(PUT,
-                                    String.format("%s/events?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/events/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(DELETE,
-                                    String.format("%s/events?**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/events/**", apiPrefix)).hasRole(Role.ADMIN)
 
                             //organizations
                             .requestMatchers(GET,

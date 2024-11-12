@@ -96,6 +96,12 @@ public class EventService implements IEventService {
                 .build();
         //Ko cho insert quá 5 ảnh cho 1 sản phẩm
         int size = eventImageRepository.findByEventId(eventId).size();
+
+        //ảnh đầu tiên sẽ làm thumbbnail
+        if(size == 0) {
+            existingEvent.setThumbnail(eventImageDTO.getImageUrl());
+            eventRepository.save(existingEvent);
+        }
         if(size >= EventImage.MAXIMUM_IMAGES_PER_EVENT) {
             throw new InvalidParamException(
                     "Number of images must be <= "

@@ -35,8 +35,14 @@ public class EventResponse {
     @JsonProperty("category_id")
     private Long categoryId;
 
+    @JsonProperty("category_name")
+    private String categoryName;
+
     @JsonProperty("organization_id")
     private Long organizeId;
+
+    @JsonProperty("organization_name")
+    private String organizationName;
 
     @JsonProperty("event_images")
     private List<EventImage> eventImages = new ArrayList<>();
@@ -49,7 +55,9 @@ public class EventResponse {
                 .thumbnail(event.getThumbnail())
                 .location(event.getLocation())
                 .categoryId(event.getCategory().getId())
+                .categoryName(event.getCategory().getName())
                 .organizeId(event.getOrganization().getId())
+                .organizationName(event.getOrganization().getName())
                 .eventImages(event.getEventImages())
                 .build();
         eventResponse.setStartDate(event.getStartDate());
