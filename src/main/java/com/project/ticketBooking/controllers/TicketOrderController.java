@@ -8,6 +8,7 @@ import com.project.ticketBooking.services.interfaces.ITicketOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -21,18 +22,21 @@ public class TicketOrderController {
     private final ITicketOrderService ticketOrderService;
 
     @GetMapping("")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<TicketOrder>> getAllTicketOrders() {
         List<TicketOrder> ticketOrders = ticketOrderService.getTicketOrdersByUserId(null);
         return ResponseEntity.ok(ticketOrders);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<TicketOrder> getTicketOrderById(@PathVariable Long id) throws DataNotFoundException {
         TicketOrder ticketOrder = ticketOrderService.getTicketOrderById(id);
         return ResponseEntity.ok(ticketOrder);
     }
 
     @PostMapping("")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> createTicketOrder(
             @Valid @RequestBody TicketOrderDTO ticketOrderDTO,
             BindingResult result
@@ -53,6 +57,7 @@ public class TicketOrderController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateTicketOrder(
             @PathVariable("id") Long ticketOrderId,
             @Valid @RequestBody TicketOrderDTO ticketOrderDTO
@@ -66,6 +71,7 @@ public class TicketOrderController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteTicketOrder(
             @PathVariable("id") Long ticketOrderId
     ) {
@@ -78,6 +84,7 @@ public class TicketOrderController {
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getTicketOrdersByUserId(@PathVariable Long userId) {
         try {
             List<TicketOrder> ticketOrders = ticketOrderService.getTicketOrdersByUserId(userId);

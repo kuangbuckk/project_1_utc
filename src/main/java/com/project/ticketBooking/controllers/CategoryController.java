@@ -8,6 +8,7 @@ import com.project.ticketBooking.services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +40,9 @@ public class CategoryController {
     }
 
     @PostMapping("")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> insertCategory(
-            @RequestBody CategoryDTO categoryDTO,
+            @Valid @RequestBody CategoryDTO categoryDTO,
             BindingResult result
     ){
         if (result.hasErrors()) {
@@ -55,6 +57,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateCategory(
             @PathVariable("id") Long categoryId,
             @Valid @RequestBody CategoryDTO categoryDTO
@@ -64,6 +67,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteCategory(
             @PathVariable("id") Long categoryId
     ) {

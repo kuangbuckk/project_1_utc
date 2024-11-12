@@ -120,4 +120,8 @@ public class EventService implements IEventService {
         return eventRepository.searchByKeyword(keyword, pageRequest)
                 .map(EventResponse::fromEvent);
     }
+
+    public long getTotalEventsCount() {
+        return eventRepository.count();
+    }
 }

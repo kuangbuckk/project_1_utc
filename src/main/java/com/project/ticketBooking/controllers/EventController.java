@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -54,14 +55,18 @@ public class EventController {
                 Sort.by("id").descending()
         );
         logger.info(String.format("page = %d, limit = %d", page, limit));
-        List<EventResponse> eventResponses = eventRedisService.getAllEvents(pageRequest);
+        List<EventResponse> eventResponses = eventRedisService.getAllEvents(pageRequest); //lấy dữ lieeuj từ cache Redis
         if (eventResponses == null) {
-            Page<EventResponse> productPage = eventService.getAllEvents(pageRequest);
+            Page<EventResponse> productPage = eventService.getAllEvents(pageRequest); //lấy dữ liệu từ DB
             // Lấy tổng số trang
             totalPages = productPage.getTotalPages();
             eventResponses = productPage.getContent();
-            eventRedisService.saveAllEvents(eventResponses, pageRequest);
+            eventRedisService.saveAllEvents(eventResponses, pageRequest); //lưu vào cache Redis
+        } else {
+            long totalEvents = eventService.getTotalEventsCount();
+            totalPages = (int) Math.ceil((double) totalEvents / limit);
         }
+
         return ResponseEntity.ok(EventListResponse
                 .builder()
                 .events(eventResponses)
@@ -83,6 +88,7 @@ public class EventController {
     }
 
     @PostMapping("")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> insertEvent(
             @Valid @RequestBody EventDTO eventDTO,
             BindingResult result
@@ -103,6 +109,7 @@ public class EventController {
     }
 
     @PostMapping(value = "uploads/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> uploadImages(
             @PathVariable("id") Long eventId,
             @RequestParam("files") List<MultipartFile> files
@@ -173,6 +180,7 @@ public class EventController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateEvent(
             @Valid @PathVariable("id") Long eventId,
             @Valid @RequestBody EventDTO eventDTO
@@ -186,6 +194,7 @@ public class EventController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteEvent(
             @Valid @PathVariable("id") Long eventId
     ) {

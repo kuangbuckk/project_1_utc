@@ -48,10 +48,10 @@ public class EventRedisService implements IEventRedisService {
         //Tìm key trong Redis để lấy ra value
         String key = this.getKeyFrom(pageRequest);
         //Lấy ra value từ key
-        String json = (String) redisTemplate.opsForValue().get(key);
+        String json = (String) redisTemplate.opsForValue().get(key); //json
         //Chuyển value từ dạng json sang List<EventResponse> để trả về nếu có
         List<EventResponse> eventResponses = json != null ?
-                redisObjectMapper.readValue(json, new TypeReference<List<EventResponse>>() {})
+                redisObjectMapper.readValue(json, new TypeReference<List<EventResponse>>() {}) //json -> java object
                 : null;
         return eventResponses;
     }
@@ -62,7 +62,7 @@ public class EventRedisService implements IEventRedisService {
         //Tạo key từ pageRequest
         String key = this.getKeyFrom(pageRequest);
         //Chuyển List<EventResponse> sang dạng json để lưu vào Redis
-        String json = redisObjectMapper.writeValueAsString(eventResponses);
+        String json = redisObjectMapper.writeValueAsString(eventResponses); //java object -> json
         //Lưu vào Redis
         redisTemplate.opsForValue().set(key, json);
     }
