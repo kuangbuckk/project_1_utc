@@ -8,8 +8,8 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ticketbooking?serverTimezone=UTC
     username: postgres
-  jpa:
     password: Springter2003
+  jpa:
     show-sql: true
     hibernate:
       ddl-auto: none
