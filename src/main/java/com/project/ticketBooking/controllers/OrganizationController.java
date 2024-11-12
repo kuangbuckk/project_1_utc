@@ -62,9 +62,17 @@ public class OrganizationController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateOrganization(
             @Valid @PathVariable("id") Long organizationId,
-            @Valid @RequestBody OrganizationDTO organizationDTO
+            @Valid @RequestBody OrganizationDTO organizationDTO,
+            BindingResult result
     ){
         try {
+            if (result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
             Organization newOrganization = organizationService.updateOrganization(organizationId, organizationDTO);
             return ResponseEntity.ok(newOrganization);
         } catch (Exception e) {
