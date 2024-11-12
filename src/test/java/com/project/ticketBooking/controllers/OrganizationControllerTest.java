@@ -101,7 +101,7 @@ class OrganizationControllerTest {
         Organization updatedOrganization = new Organization();
         when(organizationService.updateOrganization(organizationId, organizationDTO)).thenReturn(updatedOrganization);
 
-        ResponseEntity<?> response = organizationController.updateOrganization(organizationId, organizationDTO);
+        ResponseEntity<?> response = organizationController.updateOrganization(organizationId, organizationDTO, bindingResult);
 
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(updatedOrganization, response.getBody());
@@ -113,7 +113,7 @@ class OrganizationControllerTest {
         OrganizationDTO organizationDTO = new OrganizationDTO();
         when(organizationService.updateOrganization(organizationId, organizationDTO)).thenThrow(new DataNotFoundException("Organization not found"));
 
-        ResponseEntity<?> response = organizationController.updateOrganization(organizationId, organizationDTO);
+        ResponseEntity<?> response = organizationController.updateOrganization(organizationId, organizationDTO, bindingResult);
 
         assertEquals(400, response.getStatusCodeValue());
         assertEquals("Organization not found", response.getBody());
