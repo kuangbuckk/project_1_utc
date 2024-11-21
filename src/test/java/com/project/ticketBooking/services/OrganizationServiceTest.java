@@ -92,10 +92,10 @@ public class OrganizationServiceTest {
     @Test
     void updateOrganization_withInvalidId_throwsDataNotFoundException() {
         Long organizationId = 1L;
-        CategoryDTO categoryDTO = new CategoryDTO();
+        OrganizationDTO organizationDTO = new OrganizationDTO();
         when(organizationRepository.findById(organizationId)).thenReturn(Optional.empty());
 
-        assertThrows(DataNotFoundException.class, () -> organizationService.updateOrganization(organizationId, categoryDTO));
+        assertThrows(DataNotFoundException.class, () -> organizationService.updateOrganization(organizationId, organizationDTO));
     }
 
     @Test
