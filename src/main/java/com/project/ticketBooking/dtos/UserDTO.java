@@ -24,6 +24,7 @@ public class UserDTO {
 
     @NotBlank(message = "Email cannot be null")
     @Email(message = "Email should be valid")
+
     @JsonProperty("email")
     private String email;
 
