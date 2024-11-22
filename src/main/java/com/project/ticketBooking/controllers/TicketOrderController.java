@@ -4,6 +4,7 @@ package com.project.ticketBooking.controllers;
 import com.project.ticketBooking.dtos.TicketOrderDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.models.TicketOrder;
+import com.project.ticketBooking.responses.TicketOrderResponse;
 import com.project.ticketBooking.services.interfaces.ITicketOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,16 +24,20 @@ public class TicketOrderController {
 
     @GetMapping("")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<TicketOrder>> getAllTicketOrders() {
+    public ResponseEntity<List<TicketOrderResponse>> getAllTicketOrders() {
         List<TicketOrder> ticketOrders = ticketOrderService.getTicketOrdersByUserId(null);
-        return ResponseEntity.ok(ticketOrders);
+        List<TicketOrderResponse> ticketOrderResponses = ticketOrders.stream()
+                .map(TicketOrderResponse::fromTicketOrder)
+                .toList();
+        return ResponseEntity.ok(ticketOrderResponses);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<TicketOrder> getTicketOrderById(@PathVariable Long id) throws DataNotFoundException {
+    public ResponseEntity<TicketOrderResponse> getTicketOrderById(@PathVariable Long id) throws DataNotFoundException {
         TicketOrder ticketOrder = ticketOrderService.getTicketOrderById(id);
-        return ResponseEntity.ok(ticketOrder);
+        TicketOrderResponse ticketOrderResponse = TicketOrderResponse.fromTicketOrder(ticketOrder);
+        return ResponseEntity.ok(ticketOrderResponse);
     }
 
     @PostMapping("")
@@ -88,7 +93,10 @@ public class TicketOrderController {
     public ResponseEntity<?> getTicketOrdersByUserId(@PathVariable Long userId) {
         try {
             List<TicketOrder> ticketOrders = ticketOrderService.getTicketOrdersByUserId(userId);
-            return ResponseEntity.ok(ticketOrders);
+            List<TicketOrderResponse> ticketOrderResponses = ticketOrders.stream()
+                    .map(TicketOrderResponse::fromTicketOrder)
+                    .toList();
+            return ResponseEntity.ok(ticketOrderResponses);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }

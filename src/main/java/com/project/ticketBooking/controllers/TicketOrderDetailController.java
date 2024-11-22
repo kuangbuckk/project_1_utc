@@ -83,7 +83,10 @@ public class TicketOrderDetailController {
     public ResponseEntity<?> getTicketOrderDetailsByOrderId(@PathVariable Long orderId) {
         try {
             List<TicketOrderDetail> ticketOrderDetails = ticketOrderDetailService.getTicketOrderDetailsByTicketOrderId(orderId);
-            return ResponseEntity.ok(ticketOrderDetails);
+            List<TicketOrderDetailResponse> ticketOrderDetailResponses = Arrays.asList(ticketOrderDetails.stream()
+                    .map(TicketOrderDetailResponse::fromTicketOrderDetail)
+                    .toArray(TicketOrderDetailResponse[]::new));
+            return ResponseEntity.ok(ticketOrderDetailResponses);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
