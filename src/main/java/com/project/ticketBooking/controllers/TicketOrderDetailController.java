@@ -4,6 +4,8 @@ package com.project.ticketBooking.controllers;
 import com.project.ticketBooking.dtos.TicketOrderDetailDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.models.TicketOrderDetail;
+import com.project.ticketBooking.responses.TicketOrderDetailResponse;
+import com.project.ticketBooking.responses.TicketResponse;
 import com.project.ticketBooking.services.interfaces.ITicketOrderDetailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -91,7 +94,10 @@ public class TicketOrderDetailController {
     public ResponseEntity<?> getTicketOrderDetailsByUserId(@PathVariable Long userId) {
         try {
             List<TicketOrderDetail> ticketOrderDetails = ticketOrderDetailService.getTicketOrderDetailsByUserId(userId);
-            return ResponseEntity.ok(ticketOrderDetails);
+            List<TicketOrderDetailResponse> ticketOrderDetailResponses = Arrays.asList(ticketOrderDetails.stream()
+                    .map(TicketOrderDetailResponse::fromTicketOrderDetail)
+                    .toArray(TicketOrderDetailResponse[]::new));
+            return ResponseEntity.ok(ticketOrderDetailResponses);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }

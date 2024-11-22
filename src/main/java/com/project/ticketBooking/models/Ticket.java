@@ -24,6 +24,10 @@ public class Ticket extends BaseEntity {
     private TicketCategory ticketCategory;
 
     @ManyToOne
+    @JoinColumn(name = "ticket_order_detail_id", nullable = false)
+    private TicketOrderDetail ticketOrderDetail;
+
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

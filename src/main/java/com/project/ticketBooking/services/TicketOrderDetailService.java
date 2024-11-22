@@ -32,35 +32,35 @@ public class TicketOrderDetailService implements ITicketOrderDetailService {
     }
 
     @Override
-public TicketOrderDetail createTicketOrderDetail(TicketOrderDetailDTO ticketOrderDetailDTO) throws DataNotFoundException {
-    TicketOrder existingTicketOrder = ticketOrderRepository.findById(ticketOrderDetailDTO.getTicketOrderId())
-            .orElseThrow(() -> new DataNotFoundException("Ticket Order not found"));
-    TicketCategory existingTicketCategory = ticketCategoryRepository.findById(ticketOrderDetailDTO.getTicketCategoryId())
-            .orElseThrow(() -> new DataNotFoundException("Ticket Category not found"));
+    public TicketOrderDetail createTicketOrderDetail(TicketOrderDetailDTO ticketOrderDetailDTO) throws DataNotFoundException {
+        TicketOrder existingTicketOrder = ticketOrderRepository.findById(ticketOrderDetailDTO.getTicketOrderId())
+                .orElseThrow(() -> new DataNotFoundException("Ticket Order not found"));
+        TicketCategory existingTicketCategory = ticketCategoryRepository.findById(ticketOrderDetailDTO.getTicketCategoryId())
+                .orElseThrow(() -> new DataNotFoundException("Ticket Category not found"));
 
-    TicketOrderDetail ticketOrderDetail = TicketOrderDetail.builder()
-            .ticketOrder(existingTicketOrder)
-            .ticketCategory(existingTicketCategory)
-            .numberOfTickets(ticketOrderDetailDTO.getNumberOfTickets())
-            .totalMoney(ticketOrderDetailDTO.getTotalMoney())
-            .build();
-    return ticketOrderDetailRepository.save(ticketOrderDetail);
-}
+        TicketOrderDetail ticketOrderDetail = TicketOrderDetail.builder()
+                .ticketOrder(existingTicketOrder)
+                .ticketCategory(existingTicketCategory)
+                .numberOfTickets(ticketOrderDetailDTO.getNumberOfTickets())
+                .totalMoney(ticketOrderDetailDTO.getTotalMoney())
+                .build();
+        return ticketOrderDetailRepository.save(ticketOrderDetail);
+    }
 
-@Override
-public TicketOrderDetail updateTicketOrderDetail(Long id, TicketOrderDetailDTO ticketOrderDetailDTO) throws DataNotFoundException {
-    TicketOrderDetail ticketOrderDetail = ticketOrderDetailRepository.findById(id)
-            .orElseThrow(() -> new DataNotFoundException("Ticket Order Detail not found"));
-    TicketOrder existingTicketOrder = ticketOrderRepository.findById(ticketOrderDetailDTO.getTicketOrderId())
-            .orElseThrow(() -> new DataNotFoundException("Ticket Order not found"));
-    TicketCategory existingTicketCategory = ticketCategoryRepository.findById(ticketOrderDetailDTO.getTicketCategoryId())
-            .orElseThrow(() -> new DataNotFoundException("Ticket Category not found"));
-    ticketOrderDetail.setTicketOrder(existingTicketOrder);
-    ticketOrderDetail.setTicketCategory(existingTicketCategory);
-    ticketOrderDetail.setNumberOfTickets(ticketOrderDetailDTO.getNumberOfTickets());
-    ticketOrderDetail.setTotalMoney(ticketOrderDetailDTO.getTotalMoney());
-    return ticketOrderDetailRepository.save(ticketOrderDetail);
-}
+    @Override
+    public TicketOrderDetail updateTicketOrderDetail(Long id, TicketOrderDetailDTO ticketOrderDetailDTO) throws DataNotFoundException {
+        TicketOrderDetail ticketOrderDetail = ticketOrderDetailRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Ticket Order Detail not found"));
+        TicketOrder existingTicketOrder = ticketOrderRepository.findById(ticketOrderDetailDTO.getTicketOrderId())
+                .orElseThrow(() -> new DataNotFoundException("Ticket Order not found"));
+        TicketCategory existingTicketCategory = ticketCategoryRepository.findById(ticketOrderDetailDTO.getTicketCategoryId())
+                .orElseThrow(() -> new DataNotFoundException("Ticket Category not found"));
+        ticketOrderDetail.setTicketOrder(existingTicketOrder);
+        ticketOrderDetail.setTicketCategory(existingTicketCategory);
+        ticketOrderDetail.setNumberOfTickets(ticketOrderDetailDTO.getNumberOfTickets());
+        ticketOrderDetail.setTotalMoney(ticketOrderDetailDTO.getTotalMoney());
+        return ticketOrderDetailRepository.save(ticketOrderDetail);
+    }
 
     @Override
     public void deleteTicketOrderDetail(Long id) {

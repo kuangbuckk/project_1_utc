@@ -24,4 +24,9 @@ public class TicketDTO {
     @JsonProperty("user_id")
     @Min(value = 1, message = "User ID must be greater than 0")
     private Long userId;
+
+    @NotNull(message = "Ticket order detail ID cannot be null")
+    @JsonProperty("ticket_order_detail_id")
+    @Min(value = 1, message = "Ticket order detail ID must be greater than 0")
+    private Long ticketOrderDetailId;
 }

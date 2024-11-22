@@ -4,6 +4,7 @@ package com.project.ticketBooking.controllers;
 import com.project.ticketBooking.dtos.TicketDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.models.Ticket;
+import com.project.ticketBooking.responses.TicketResponse;
 import com.project.ticketBooking.services.interfaces.ITicketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -55,6 +57,21 @@ public class TicketController {
         }
     }
 
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<?> updateTicketStatus(
+            @PathVariable Long id,
+            @RequestParam String status
+    ) {
+        try {
+            Ticket updatedTicket = ticketService.updateTicketStatus(id, status);
+            return ResponseEntity.ok(updatedTicket);
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateTicket(
@@ -90,6 +107,33 @@ public class TicketController {
             return ResponseEntity.ok(tickets);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/ticketCategory/{id}")
+//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> getTicketsByTicketCategoryId(@PathVariable Long id) {
+        try {
+            List<Ticket> tickets = ticketService.getTicketsByTicketCategoryId(id);
+            List<TicketResponse> ticketResponses = Arrays.asList(tickets.stream()
+                    .map(TicketResponse::fromTicket)
+                    .toArray(TicketResponse[]::new));
+            return ResponseEntity.ok(ticketResponses);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/ticketOrderDetail/{id}")
+    public ResponseEntity<?> getTicketsByTicketOrderDetailId(@PathVariable Long id) {
+        try {
+            List<Ticket> tickets = ticketService.getTicketsByTicketOrderDetailId(id);
+            List<TicketResponse> ticketResponses = Arrays.asList(tickets.stream()
+                    .map(TicketResponse::fromTicket)
+                    .toArray(TicketResponse[]::new));
+            return ResponseEntity.ok(ticketResponses);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
