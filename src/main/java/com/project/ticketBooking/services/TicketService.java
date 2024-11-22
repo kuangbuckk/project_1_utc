@@ -2,10 +2,7 @@ package com.project.ticketBooking.services;
 
 import com.project.ticketBooking.dtos.TicketDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
-import com.project.ticketBooking.models.Event;
-import com.project.ticketBooking.models.Ticket;
-import com.project.ticketBooking.models.TicketCategory;
-import com.project.ticketBooking.models.User;
+import com.project.ticketBooking.models.*;
 import com.project.ticketBooking.repositories.EventRepository;
 import com.project.ticketBooking.repositories.TicketCategoryRepository;
 import com.project.ticketBooking.repositories.TicketRepository;
@@ -49,12 +46,13 @@ public class TicketService implements ITicketService {
         if (remainingTickets <= 0) {
             throw new Exception("No remaining tickets for this category. Please try another category");
         }
-        ticketCategory.setRemainingCount(remainingTickets - 1);
+        int ticketBought = ticketCategory.getRemainingCount() - 1;
+        ticketCategory.setRemainingCount(ticketBought);
         ticketCategoryRepository.save(ticketCategory);
 
         Ticket ticket = Ticket.builder()
                 .ticketCategory(ticketCategory)
-                .status(ticketDTO.getStatus())
+                .status(TicketStatus.PENDING)
                 .user(existingUser)
                 .build();
         return ticketRepository.save(ticket);

@@ -54,7 +54,7 @@ public class TicketCategoryService implements ITicketCategoryService {
         ticketCategory.setCategoryName(ticketCategoryDTO.getCategoryName());
         ticketCategory.setPrice(ticketCategoryDTO.getPrice());
         ticketCategory.setRemainingCount(ticketCategoryDTO.getRemainingCount());
-        ticketCategory.setEvent(existingEvent);
+//        ticketCategory.setEvent(existingEvent);
         return ticketCategoryRepository.save(ticketCategory);
     }
 
