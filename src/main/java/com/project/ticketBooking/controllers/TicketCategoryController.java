@@ -82,9 +82,17 @@ public class TicketCategoryController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateTicketCategory(
             @PathVariable("id") Long ticketCategoryId,
-            @Valid @RequestBody TicketCategoryDTO ticketCategoryDTO
+            @Valid @RequestBody TicketCategoryDTO ticketCategoryDTO,
+            BindingResult result
     ) {
         try {
+            if (result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
             TicketCategory updatedTicketCategory = ticketCategoryService.updateTicketCategory(ticketCategoryId, ticketCategoryDTO);
             return ResponseEntity.ok(updatedTicketCategory);
         } catch (Exception e) {

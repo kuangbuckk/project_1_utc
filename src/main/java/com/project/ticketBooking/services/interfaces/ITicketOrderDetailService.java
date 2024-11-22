@@ -12,4 +12,5 @@ public interface ITicketOrderDetailService {
     TicketOrderDetail updateTicketOrderDetail(Long id, TicketOrderDetailDTO ticketOrderDetailDTO) throws DataNotFoundException;
     void deleteTicketOrderDetail(Long id);
     List<TicketOrderDetail> getTicketOrderDetailsByTicketOrderId(Long ticketOrderId);
+    List<TicketOrderDetail> getTicketOrderDetailsByUserId(Long userId) throws DataNotFoundException;
 }

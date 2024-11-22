@@ -85,4 +85,15 @@ public class TicketOrderDetailController {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+
+    @GetMapping("/user/{userId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> getTicketOrderDetailsByUserId(@PathVariable Long userId) {
+        try {
+            List<TicketOrderDetail> ticketOrderDetails = ticketOrderDetailService.getTicketOrderDetailsByUserId(userId);
+            return ResponseEntity.ok(ticketOrderDetails);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
 }

@@ -4,6 +4,7 @@ package com.project.ticketBooking.services;
 import com.project.ticketBooking.dtos.TicketOrderDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.models.TicketOrder;
+import com.project.ticketBooking.models.TicketStatus;
 import com.project.ticketBooking.models.User;
 import com.project.ticketBooking.repositories.TicketOrderRepository;
 import com.project.ticketBooking.repositories.UserRepository;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -34,10 +36,10 @@ public class TicketOrderService implements ITicketOrderService {
 
         TicketOrder ticketOrder = TicketOrder.builder()
                 .user(existingUser)
-                .orderDate(ticketOrderDTO.getOrderDate())
+                .orderDate(LocalDate.now())
                 .totalMoney(ticketOrderDTO.getTotalMoney())
                 .paymentMethod(ticketOrderDTO.getPaymentMethod())
-                .paymentStatus(ticketOrderDTO.getPaymentStatus())
+                .paymentStatus(TicketStatus.PENDING)
                 .build();
         return ticketOrderRepository.save(ticketOrder);
     }
