@@ -10,6 +10,7 @@ import com.project.ticketBooking.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +64,7 @@ public class UserController {
     }
 
     @PostMapping("/details")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String token) {
         try {
             // Kiểm tra thông tin đăng nhập và sinh token
@@ -73,4 +75,20 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+//    @PostMapping("/avatar/{userId}")
+//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+//    public ResponseEntity<?> updateUserAvatar(
+//            @PathVariable Long userId,
+//            @RequestParam String avatarUrl
+//    ) {
+//        try {
+//            User updatedUser = userService.updateUserAvatar(userId, avatarUrl);
+//            return ResponseEntity.ok(updatedUser);
+//        } catch (DataNotFoundException e) {
+//            return ResponseEntity.status(404).body(e.getMessage());
+//        } catch (Exception e) {
+//            return ResponseEntity.status(500).body(e.getMessage());
+//        }
+//    }
 }
