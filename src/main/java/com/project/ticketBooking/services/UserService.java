@@ -3,6 +3,7 @@ package com.project.ticketBooking.services;
 import com.project.ticketBooking.component.JwtTokenUtils;
 import com.project.ticketBooking.dtos.UserAvatarDTO;
 import com.project.ticketBooking.dtos.UserDTO;
+import com.project.ticketBooking.dtos.UserUpdateDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.exceptions.PermissionDenyException;
 import com.project.ticketBooking.models.Role;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -110,6 +112,30 @@ public class UserService implements IUserService{
         //authenticate with Java Spring Security
         authenticationManager.authenticate(authenticationToken);
         return jwtTokenUtil.generateToken(existingUser); //want to return JWT token ?
+    }
+
+    @Override
+    @Transactional
+    public User updateUser(String token, UserUpdateDTO userDTO) throws Exception {
+        String email = jwtTokenUtil.extractEmail(token);
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User existingUser = optionalUser.get();
+        String userEncodedCurrentPassword = existingUser.getPassword();
+        if(!passwordEncoder.matches(userDTO.getCurrentPassword(), userEncodedCurrentPassword)) {
+            throw new DataNotFoundException("Current password/email is not correct");
+        }
+        if(Objects.equals(userDTO.getNewPassword(), userDTO.getRetypeNewPassword())) {
+            String newPassword = userDTO.getNewPassword();
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            existingUser.setPassword(encodedPassword);
+        } else {
+            throw new DataNotFoundException("Password does not match");
+        }
+        existingUser.setFullName(userDTO.getFullName());
+        existingUser.setPhoneNumber(userDTO.getPhoneNumber());
+        existingUser.setAddress(userDTO.getAddress());
+        existingUser.setDateOfBirth(userDTO.getDateOfBirth());
+        return userRepository.save(existingUser);
     }
 
     @Override

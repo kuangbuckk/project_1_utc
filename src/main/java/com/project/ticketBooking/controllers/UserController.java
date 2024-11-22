@@ -2,6 +2,7 @@ package com.project.ticketBooking.controllers;
 
 import com.project.ticketBooking.dtos.UserDTO;
 import com.project.ticketBooking.dtos.UserLoginDTO;
+import com.project.ticketBooking.dtos.UserUpdateDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.models.User;
 import com.project.ticketBooking.responses.LoginResponse;
@@ -91,4 +92,31 @@ public class UserController {
 //            return ResponseEntity.status(500).body(e.getMessage());
 //        }
 //    }
+
+    @PutMapping("/update")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> updateUser(
+            @RequestHeader("Authorization") String token,
+            @Valid @RequestBody UserUpdateDTO userUpdateDTO,
+            BindingResult result
+    ) {
+        try {
+            if (result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
+            if (!userUpdateDTO.getNewPassword().equals(userUpdateDTO.getRetypeNewPassword())) {
+                return ResponseEntity.badRequest().body("Password does not match");
+            }
+            String extractedToken = token.substring(7);
+            User updatedUser = userService.updateUser(extractedToken, userUpdateDTO);
+            UserResponse userResponse = UserResponse.fromUser(updatedUser);
+            return ResponseEntity.ok(userResponse);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
