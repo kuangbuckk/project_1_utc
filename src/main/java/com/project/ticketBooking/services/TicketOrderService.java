@@ -40,6 +40,8 @@ public class TicketOrderService implements ITicketOrderService {
                 .totalMoney(ticketOrderDTO.getTotalMoney())
                 .paymentMethod(ticketOrderDTO.getPaymentMethod())
                 .paymentStatus(TicketStatus.PENDING)
+                .stripeTokenId(ticketOrderDTO.getStripeTokenId())
+                .email(ticketOrderDTO.getEmail())
                 .build();
         return ticketOrderRepository.save(ticketOrder);
     }

@@ -31,4 +31,10 @@ public class TicketOrderDTO {
 
     @JsonProperty("payment_status")
     private String paymentStatus;
+
+    @JsonProperty("stripe_token_id")
+    private String stripeTokenId;
+
+    @JsonProperty("email")
+    private String email;
 }

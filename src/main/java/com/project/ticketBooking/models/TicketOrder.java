@@ -35,4 +35,10 @@ public class TicketOrder extends BaseEntity {
 
     @Column(name = "payment_status", columnDefinition = "varchar(100) default null")
     private String paymentStatus;
+
+    @Column(name = "stripe_token_id", columnDefinition = "varchar(100) default null")
+    private String stripeTokenId;
+
+    @Column(name = "email", columnDefinition = "varchar(100) default null")
+    private String email;
 }
