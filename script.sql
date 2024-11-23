@@ -22,6 +22,10 @@ CREATE TABLE users
     FOREIGN KEY (role_id) REFERENCES roles (id)
 );
 
+ALTER TABLE users
+ADD COLUMN organization_id INT REFERENCES organizations (id) DEFAULT NULL ON DELETE SET NULL;
+--quản lý ban tổ chức và admin sẽ bàn giao quyền cho user bằng cách thay đổi organization_id cho user trên dashboard
+
 CREATE TABLE user_avatars
 (
     id        SERIAL PRIMARY KEY,
@@ -68,6 +72,10 @@ ALTER TABLE events
 ADD COLUMN start_date TIMESTAMP,
 ADD COLUMN end_date TIMESTAMP;
 
+ALTER TABLE events
+ADD COLUMN status NOT NULL DEFAULT 'pending';
+--pending, active, cancelling, cancelled, completed: organizer chỉ có thể tạo event ở trạng thái pending,
+--admin có thể duyệt event từ pending sang active, hoặc từ active sang cancelled, hoặc từ active sang completed
 
 
 CREATE TABLE event_images
@@ -109,6 +117,11 @@ CREATE TABLE ticket_orders
     updated_at  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
+ALTER TABLE ticket_orders
+    ADD COLUMN stripe_token_id varchar(255) NOT NULL UNIQUE default '';
+
+ALTER TABLE ticket_orders
+    ADD COLUMN email varchar(255) NOT NULL default '';
 
 CREATE TABLE ticket_order_details
 (
