@@ -35,6 +35,9 @@ public class JwtTokenUtils {
 //        this.generateSecretKey();
         claims.put("email", user.getEmail());
         claims.put("userId", user.getId());
+        if (user.getOrganization() != null) {
+            claims.put("organizationId", user.getOrganization().getId());
+        }
         try {
             String token = Jwts.builder()
                     .setClaims(claims) //how to extract clains from this?
@@ -79,6 +82,10 @@ public class JwtTokenUtils {
     public boolean isTokenExpired(String token) {
         Date expirationDate = this.extractClaim(token, Claims::getExpiration);
         return expirationDate.before(new Date());
+    }
+
+    public Integer extractOrganizationId(String token) {
+        return extractClaim(token, claims -> (Integer) claims.get("organizationId"));
     }
 
     public String extractEmail(String token) {

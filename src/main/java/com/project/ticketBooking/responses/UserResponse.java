@@ -2,6 +2,7 @@ package com.project.ticketBooking.responses;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.project.ticketBooking.models.Organization;
 import com.project.ticketBooking.models.Role;
 import com.project.ticketBooking.models.User;
 import lombok.*;
@@ -45,6 +46,9 @@ public class UserResponse {
     @JsonProperty("role")
     private Role role;
 
+    @JsonProperty("organization")
+    private Organization organization;
+
     public static UserResponse fromUser(User user) {
         return UserResponse.builder()
                 .id(user.getId())
@@ -56,6 +60,7 @@ public class UserResponse {
                 .dateOfBirth(user.getDateOfBirth())
                 .facebookAccountId(user.getFacebookAccountId())
                 .googleAccountId(user.getGoogleAccountId())
+                .organization(user.getOrganization())
                 .role(user.getRole())
                 .build();
     }

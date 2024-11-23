@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @PostMapping("/details")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
     public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String token) {
         try {
             // Kiểm tra thông tin đăng nhập và sinh token

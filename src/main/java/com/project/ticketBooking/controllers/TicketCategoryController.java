@@ -78,6 +78,58 @@ public class TicketCategoryController {
         }
     }
 
+    @PostMapping("/organization")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
+    public ResponseEntity<?> createTicketCategoryByOrganization(
+            @RequestHeader("Authorization") String token,
+            @Valid @RequestBody TicketCategoryDTO ticketCategoryDTO,
+            BindingResult result
+    ) {
+        try {
+            if (result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
+            String authenticationOrganizationToken = token.substring(7);
+            TicketCategory newTicketCategory = ticketCategoryService.createTicketCategoryFromOrganization(authenticationOrganizationToken, ticketCategoryDTO);
+            return ResponseEntity.ok(newTicketCategory);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/organization/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
+    public ResponseEntity<?> updateTicketCategoryByOrganization(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("id") Long ticketCategoryId,
+            @Valid @RequestBody TicketCategoryDTO ticketCategoryDTO,
+            BindingResult result
+    ) {
+        try {
+            if (result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
+            String authenticationOrganizationToken = token.substring(7);
+            TicketCategory updatedTicketCategory = ticketCategoryService
+                    .updateTicketCategoryFromOrganization(
+                            authenticationOrganizationToken,
+                            ticketCategoryId,
+                            ticketCategoryDTO
+                    );
+            return ResponseEntity.ok(updatedTicketCategory);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateTicketCategory(
@@ -101,7 +153,7 @@ public class TicketCategoryController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZATION')")
     public ResponseEntity<?> deleteTicketCategory(
             @PathVariable("id") Long ticketCategoryId
     ) {

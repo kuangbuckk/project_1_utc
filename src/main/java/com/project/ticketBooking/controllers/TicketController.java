@@ -58,6 +58,7 @@ public class TicketController {
     }
 
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
     public ResponseEntity<?> updateTicketStatus(
             @PathVariable Long id,
             @RequestParam String status
@@ -73,7 +74,7 @@ public class TicketController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
     public ResponseEntity<?> updateTicket(
             @PathVariable("id") Long ticketId,
             @Valid @RequestBody TicketDTO ticketDTO
@@ -87,7 +88,7 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
     public ResponseEntity<?> deleteTicket(
             @PathVariable("id") Long ticketId
     ) {
@@ -111,7 +112,7 @@ public class TicketController {
     }
 
     @GetMapping("/ticketCategory/{id}")
-//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
     public ResponseEntity<?> getTicketsByTicketCategoryId(@PathVariable Long id) {
         try {
             List<Ticket> tickets = ticketService.getTicketsByTicketCategoryId(id);
@@ -125,6 +126,7 @@ public class TicketController {
     }
 
     @GetMapping("/ticketOrderDetail/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
     public ResponseEntity<?> getTicketsByTicketOrderDetailId(@PathVariable Long id) {
         try {
             List<Ticket> tickets = ticketService.getTicketsByTicketOrderDetailId(id);

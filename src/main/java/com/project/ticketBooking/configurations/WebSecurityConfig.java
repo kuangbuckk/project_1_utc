@@ -68,9 +68,9 @@ public class WebSecurityConfig {
                             .requestMatchers(GET,
                                     String.format("%s/events/images/*", apiPrefix)).permitAll()
                             .requestMatchers(POST,
-                                    String.format("%s/events/**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/events/**", apiPrefix)).hasAnyRole(Role.ADMIN, Role.ORGANIZER)
                             .requestMatchers(POST,
-                                    String.format("%s/events/uploads/**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/events/uploads/**", apiPrefix)).hasAnyRole(Role.ADMIN, Role.ORGANIZER)
                             .requestMatchers(PUT,
                                     String.format("%s/events/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(DELETE,
@@ -90,21 +90,21 @@ public class WebSecurityConfig {
                             .requestMatchers(GET,
                                     String.format("%s/ticketCategories/**", apiPrefix)).permitAll()
                             .requestMatchers(POST,
-                                    String.format("%s/ticketCategories/**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/ticketCategories/**", apiPrefix)).hasAnyRole(Role.ADMIN, Role.ORGANIZER)
                             .requestMatchers(PUT,
-                                    String.format("%s/ticketCategories/**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/ticketCategories/**", apiPrefix)).hasAnyRole(Role.ADMIN, Role.ORGANIZER)
                             .requestMatchers(DELETE,
                                     String.format("%s/ticketCategories/**", apiPrefix)).hasRole(Role.ADMIN)
 
                             //tickets
                             .requestMatchers(GET,
-                                    String.format("%s/tickets/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
+                                    String.format("%s/tickets/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN, Role.ORGANIZER)
                             .requestMatchers(POST,
-                                    String.format("%s/tickets/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
+                                    String.format("%s/tickets/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN, Role.ORGANIZER)
                             .requestMatchers(PUT,
-                                    String.format("%s/tickets/**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/tickets/**", apiPrefix)).hasAnyRole(Role.ADMIN, Role.ORGANIZER)
                             .requestMatchers(DELETE,
-                                    String.format("%s/tickets/**", apiPrefix)).hasRole(Role.ADMIN)
+                                    String.format("%s/tickets/**", apiPrefix)).hasAnyRole(Role.ADMIN, Role.ORGANIZER)
 
                             //ticket orders
                             .requestMatchers(GET,

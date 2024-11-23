@@ -3,8 +3,10 @@ package com.project.ticketBooking.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.ticketBooking.dtos.EventDTO;
 import com.project.ticketBooking.dtos.EventImageDTO;
+import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.models.Event;
 import com.project.ticketBooking.models.EventImage;
+import com.project.ticketBooking.models.Ticket;
 import com.project.ticketBooking.responses.EventListResponse;
 import com.project.ticketBooking.responses.EventResponse;
 import com.project.ticketBooking.services.EventRedisService;
@@ -57,10 +59,10 @@ public class EventController {
         logger.info(String.format("page = %d, limit = %d", page, limit));
         List<EventResponse> eventResponses = eventRedisService.getAllEvents(pageRequest); //lấy dữ lieeuj từ cache Redis
         if (eventResponses == null) {
-            Page<EventResponse> productPage = eventService.getAllEvents(pageRequest); //lấy dữ liệu từ DB
+            Page<EventResponse> eventPage = eventService.getAllEvents(pageRequest); //lấy dữ liệu từ DB
             // Lấy tổng số trang
-            totalPages = productPage.getTotalPages();
-            eventResponses = productPage.getContent();
+            totalPages = eventPage.getTotalPages();
+            eventResponses = eventPage.getContent();
             eventRedisService.saveAllEvents(eventResponses, pageRequest); //lưu vào cache Redis
         } else {
             long totalEvents = eventService.getTotalEventsCount();
@@ -88,7 +90,7 @@ public class EventController {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
     public ResponseEntity<?> insertEvent(
             @Valid @RequestBody EventDTO eventDTO,
             BindingResult result
@@ -109,7 +111,7 @@ public class EventController {
     }
 
     @PostMapping(value = "uploads/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
     public ResponseEntity<?> uploadImages(
             @PathVariable("id") Long eventId,
             @RequestParam("files") List<MultipartFile> files
@@ -193,6 +195,22 @@ public class EventController {
         }
     }
 
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> updateTicketStatus(
+            @PathVariable("id") Long eventId,
+            @RequestParam String status
+    ) {
+        try {
+            Event patchedEvent = eventService.updateEventStatus(eventId, status);
+            return ResponseEntity.ok(EventResponse.fromEvent(patchedEvent));
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteEvent(
@@ -223,10 +241,23 @@ public class EventController {
     }
 
     @GetMapping("/organization/{organizationId}")
-    public ResponseEntity<?> getEventsByOrganizationId(@PathVariable Long organizationId) {
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
+    public ResponseEntity<?> getEventsByOrganizationId(
+            @PathVariable Long organizationId,
+            @RequestParam("page")     int page,
+            @RequestParam("limit")    int limit) {
         try {
-            List<Event> events = eventService.getAllEventsByOrganizationId(organizationId);
-            return ResponseEntity.ok(events);
+            //ko can cache boi vi ko phai request thuong xuyen
+            PageRequest pageRequest = PageRequest.of(
+                    page, limit,
+                    Sort.by("createdAt").descending());
+            Page<EventResponse> eventPage =  eventService.getAllEventsByOrganizationId(organizationId, pageRequest);
+            int totalPages = eventPage.getTotalPages();
+            List<EventResponse> eventResponses = eventPage.getContent();
+            return ResponseEntity.ok(EventListResponse.builder()
+                    .events(eventResponses)
+                    .totalPages(totalPages)
+                    .build());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
