@@ -44,6 +44,9 @@ public class EventResponse {
     @JsonProperty("organization_name")
     private String organizationName;
 
+    @JsonProperty("status")
+    private String status;
+
     @JsonProperty("event_images")
     private List<EventImage> eventImages = new ArrayList<>();
 
@@ -58,6 +61,7 @@ public class EventResponse {
                 .categoryName(event.getCategory().getName())
                 .organizeId(event.getOrganization().getId())
                 .organizationName(event.getOrganization().getName())
+                .status(event.getStatus())
                 .eventImages(event.getEventImages())
                 .build();
         eventResponse.setStartDate(event.getStartDate());

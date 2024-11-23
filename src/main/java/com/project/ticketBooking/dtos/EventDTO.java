@@ -41,4 +41,7 @@ public class EventDTO {
     @JsonProperty("organization_id")
     @Min(value = 1, message = "Organization's ID must be over 0")
     private Long organizeId;
+
+    @JsonProperty("status")
+    private String status;
 }

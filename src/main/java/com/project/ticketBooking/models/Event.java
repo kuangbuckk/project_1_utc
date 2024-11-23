@@ -39,6 +39,9 @@ public class Event extends BaseEntity{
     @Column(name = "end_date", nullable = false)
     private LocalDateTime endDate;
 
+    @Column(name = "status", nullable = false)
+    private String status;
+
     //category
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)

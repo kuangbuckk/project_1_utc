@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
     Page<Event> findAll(Pageable pageable);
-    List<Event> findByOrganizationId(Long organizationId);
+    Page<Event>  findByOrganizationId(Long organizationId, Pageable pageable);
     Page<Event> findByCategoryId(Long categoryId, Pageable pageable);
 
     @Query("SELECT e FROM Event e WHERE e.name LIKE %:keyword% OR e.description LIKE %:keyword%")

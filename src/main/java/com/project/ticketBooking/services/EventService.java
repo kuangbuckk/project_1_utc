@@ -4,10 +4,8 @@ import com.project.ticketBooking.dtos.EventDTO;
 import com.project.ticketBooking.dtos.EventImageDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.exceptions.InvalidParamException;
-import com.project.ticketBooking.models.Category;
-import com.project.ticketBooking.models.Event;
-import com.project.ticketBooking.models.EventImage;
-import com.project.ticketBooking.models.Organization;
+import com.project.ticketBooking.exceptions.PermissionDenyException;
+import com.project.ticketBooking.models.*;
 import com.project.ticketBooking.repositories.CategoryRepository;
 import com.project.ticketBooking.repositories.EventImageRepository;
 import com.project.ticketBooking.repositories.EventRepository;
@@ -42,7 +40,10 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public Event createEvent(EventDTO eventDTO) throws DataNotFoundException {
+    public Event createEvent(EventDTO eventDTO) throws DataNotFoundException, PermissionDenyException {
+        if (eventDTO.getStatus() != null) {
+            throw new PermissionDenyException("You have to wait for admin to approve your event");
+        }
         Organization existingOrganization = organizationRepository
                 .findById(eventDTO.getOrganizeId())
                 .orElseThrow(()-> new DataNotFoundException("Can't find organization with ID:" + eventDTO.getOrganizeId()));
@@ -56,6 +57,7 @@ public class EventService implements IEventService {
                 .endDate(eventDTO.getEndDate())
                 .category(existingCategory)
                 .organization(existingOrganization)
+                .status(EventStatus.PENDING) //default status xong r admin se duyet sang active
                 .build();
         return eventRepository.save(newEvent);
     }
@@ -70,6 +72,7 @@ public class EventService implements IEventService {
         exisitingEvent.setLocation(eventDTO.getLocation());
         exisitingEvent.setStartDate(eventDTO.getStartDate());
         exisitingEvent.setEndDate(eventDTO.getEndDate());
+        exisitingEvent.setStatus(eventDTO.getStatus());
         //Find category by id
         Category existingCategory = categoryRepository.findById(eventDTO.getCategoryId())
                 .orElseThrow(()-> new DataNotFoundException("Can't find category with ID:" + eventDTO.getCategoryId()));
@@ -81,6 +84,26 @@ public class EventService implements IEventService {
     @Override
     public void deleteEvent(Long eventId) {
         eventRepository.deleteById(eventId);
+    }
+
+    @Override
+    public Event updateEventStatus(Long eventId, String status) throws DataNotFoundException, InvalidParamException {
+        Event existingEvent = eventRepository
+                .findById(eventId)
+                .orElseThrow(() ->
+                        new DataNotFoundException(
+                                "Cannot find event with id: "+ eventId));
+        if (status.equals(EventStatus.PENDING) ||
+                status.equals(EventStatus.ACTIVE) ||
+                status.equals(EventStatus.CANCELLED) ||
+                status.equals(EventStatus.COMPLETED)
+        ) {
+            existingEvent.setStatus(status);
+            return eventRepository.save(existingEvent);
+        } else {
+            throw new InvalidParamException("Invalid status");
+        }
+
     }
 
     @Override
@@ -111,8 +134,8 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public List<Event> getAllEventsByOrganizationId(Long organizationId) throws DataNotFoundException {
-        return eventRepository.findByOrganizationId(organizationId);
+    public Page<EventResponse> getAllEventsByOrganizationId(Long organizationId, PageRequest pageRequest) throws DataNotFoundException {
+        return eventRepository.findByOrganizationId(organizationId, pageRequest).map(EventResponse::fromEvent);
     }
 
     @Override
