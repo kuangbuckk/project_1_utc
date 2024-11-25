@@ -13,7 +13,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Page<Event> findAll(Pageable pageable);
     Page<Event>  findByOrganizationId(Long organizationId, Pageable pageable);
     Page<Event> findByCategoryId(Long categoryId, Pageable pageable);
-
     @Query("SELECT e FROM Event e WHERE e.name LIKE %:keyword% OR e.description LIKE %:keyword%")
     Page<Event> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }

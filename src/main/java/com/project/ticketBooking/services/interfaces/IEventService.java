@@ -14,7 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import java.util.List;
 
 public interface IEventService {
-    Page<EventResponse> getAllEvents(PageRequest pageRequest); //add paging later
+    List<EventResponse> getAllEvents();
+    Page<EventResponse> getAllEventsPageable(PageRequest pageRequest); //add paging later
     Event getEventById(Long eventId) throws DataNotFoundException;
     Event createEvent(EventDTO eventDTO) throws DataNotFoundException, PermissionDenyException;
     Event updateEvent(Long eventId, EventDTO eventDTO) throws DataNotFoundException;

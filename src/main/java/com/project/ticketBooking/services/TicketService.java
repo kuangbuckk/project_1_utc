@@ -20,6 +20,11 @@ public class TicketService implements ITicketService {
     private final TicketOrderDetailRepository ticketOrderDetailRepository;
 
     @Override
+    public List<Ticket> getAllTickets() {
+       return ticketRepository.findAll();
+    }
+
+    @Override
     public List<Ticket> getTicketsByTicketCategoryId(Long ticketCategoryId) {
         return ticketRepository.findAllByTicketCategoryId(ticketCategoryId);
     }

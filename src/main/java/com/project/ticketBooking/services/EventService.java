@@ -27,7 +27,15 @@ public class EventService implements IEventService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Page<EventResponse> getAllEvents(PageRequest pageRequest) {
+    public List<EventResponse> getAllEvents() {
+        List<Event> events = eventRepository.findAll();
+        return events.stream()
+                .map(EventResponse::fromEvent)
+                .toList();
+    }
+
+    @Override
+    public Page<EventResponse> getAllEventsPageable(PageRequest pageRequest) {
         return eventRepository.findAll(pageRequest)
                 .map(EventResponse::fromEvent);
     }
@@ -72,7 +80,7 @@ public class EventService implements IEventService {
         exisitingEvent.setLocation(eventDTO.getLocation());
         exisitingEvent.setStartDate(eventDTO.getStartDate());
         exisitingEvent.setEndDate(eventDTO.getEndDate());
-        exisitingEvent.setStatus(eventDTO.getStatus());
+//        exisitingEvent.setStatus(eventDTO.getStatus());
         //Find category by id
         Category existingCategory = categoryRepository.findById(eventDTO.getCategoryId())
                 .orElseThrow(()-> new DataNotFoundException("Can't find category with ID:" + eventDTO.getCategoryId()));

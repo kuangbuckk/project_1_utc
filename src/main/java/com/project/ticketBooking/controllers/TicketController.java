@@ -23,11 +23,15 @@ import java.util.List;
 public class TicketController {
     private final ITicketService ticketService;
 
-//    @GetMapping("")
-//    public ResponseEntity<List<Ticket>> getAllTickets() {
-//        List<Ticket> tickets = ticketService.getTicketsByTicketCategoryId(null);
-//        return ResponseEntity.ok(tickets);
-//    }
+    @GetMapping("/admin/retrieveAll")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> getAllTickets() {
+        List<Ticket> tickets = ticketService.getAllTickets();
+        List<TicketResponse> ticketResponses = Arrays.asList(tickets.stream()
+                .map(TicketResponse::fromTicket)
+                .toArray(TicketResponse[]::new));
+        return ResponseEntity.ok(ticketResponses);
+    }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -126,7 +130,7 @@ public class TicketController {
     }
 
     @GetMapping("/ticketOrderDetail/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER') or hasRole('ROLE_USER')")
     public ResponseEntity<?> getTicketsByTicketOrderDetailId(@PathVariable Long id) {
         try {
             List<Ticket> tickets = ticketService.getTicketsByTicketOrderDetailId(id);

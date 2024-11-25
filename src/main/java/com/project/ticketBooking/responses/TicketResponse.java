@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.ticketBooking.models.Ticket;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,6 +26,12 @@ public class TicketResponse {
     private String ticketCategoryName;
     @JsonProperty("ticket_order_detail_id")
     private Long ticketOrderDetailId;
+    @JsonProperty("price")
+    private Integer ticketCategoryPrice;
+    @JsonProperty("created_at")
+    private LocalDateTime createdAt;
+    @JsonProperty("updated_at")
+    private LocalDateTime updatedAt;
 
     public static TicketResponse fromTicket(Ticket ticket) {
         return TicketResponse.builder()
@@ -35,6 +43,9 @@ public class TicketResponse {
                 .status(ticket.getStatus())
                 .ticketCategoryName(ticket.getTicketCategory().getCategoryName())
                 .ticketOrderDetailId(ticket.getTicketOrderDetail().getId())
+                .ticketCategoryPrice(ticket.getTicketCategory().getPrice())
+                .createdAt(ticket.getCreatedAt())
+                .updatedAt(ticket.getUpdatedAt())
                 .build();
     }
 

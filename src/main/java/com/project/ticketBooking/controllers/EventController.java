@@ -59,7 +59,7 @@ public class EventController {
         logger.info(String.format("page = %d, limit = %d", page, limit));
         List<EventResponse> eventResponses = eventRedisService.getAllEvents(pageRequest); //lấy dữ lieeuj từ cache Redis
         if (eventResponses == null) {
-            Page<EventResponse> eventPage = eventService.getAllEvents(pageRequest); //lấy dữ liệu từ DB
+            Page<EventResponse> eventPage = eventService.getAllEventsPageable(pageRequest); //lấy dữ liệu từ DB
             // Lấy tổng số trang
             totalPages = eventPage.getTotalPages();
             eventResponses = eventPage.getContent();
@@ -75,6 +75,17 @@ public class EventController {
                 .totalPages(totalPages)
                 .build()
         );
+    }
+
+    @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> getAllEvents() {
+        try {
+            List<EventResponse> events = eventService.getAllEvents();
+            return ResponseEntity.ok(events);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
@@ -189,7 +200,8 @@ public class EventController {
     ) {
         try {
             Event newEvent = eventService.updateEvent(eventId, eventDTO);
-            return ResponseEntity.ok(newEvent);
+            EventResponse eventResponse = EventResponse.fromEvent(newEvent);
+            return ResponseEntity.ok(eventResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
