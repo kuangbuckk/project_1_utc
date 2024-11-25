@@ -75,8 +75,9 @@ public class UserController {
             // Kiểm tra thông tin đăng nhập và sinh token
             String token = userService.login(
                     userLoginDTO.getEmail(),
-                    userLoginDTO.getPassword(),
-                    userLoginDTO.getRoleId() == null ? 1 : userLoginDTO.getRoleId());
+                    userLoginDTO.getPassword()
+                    );
+//            userLoginDTO.getRoleId() == null ? 1 : userLoginDTO.getRoleId()
             return ResponseEntity.ok(LoginResponse.builder()
                     .message("Đăng nhập thành công")
                     .token(token)

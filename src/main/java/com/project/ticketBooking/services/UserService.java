@@ -109,7 +109,7 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public String login(String email, String password, Long roleId) throws Exception {
+    public String login(String email, String password) throws Exception {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if(optionalUser.isEmpty()) {
             throw new DataNotFoundException("Email/password is not correct");
@@ -122,8 +122,8 @@ public class UserService implements IUserService{
                 throw new BadCredentialsException("Email/password is not correct");
             }
         }
-        Optional<Role> optionalRole = roleRepository.findById(roleId);
-        if(optionalRole.isEmpty() || !roleId.equals(existingUser.getRole().getId())) {
+        Optional<Role> optionalRole = roleRepository.findById(existingUser.getRole().getId());
+        if(optionalRole.isEmpty()) {
             throw new DataNotFoundException("Role does not exists");
         }
         if(optionalUser.get().isActive() != 1) {

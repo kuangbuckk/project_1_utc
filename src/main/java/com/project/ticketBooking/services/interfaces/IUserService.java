@@ -13,7 +13,7 @@ public interface IUserService {
     User getUserById(Long id) throws Exception;
     User createUser(UserDTO userDTO) throws Exception; //register
     User getUserDetailsFromToken(String token) throws Exception;
-    String login(String phoneNumber, String password, Long roleId) throws Exception;
+    String login(String phoneNumber, String password) throws Exception;
     User updateUser(String token, UserUpdateDTO userUpdateDTO) throws Exception;
     UserAvatar createuUserAvatar(Long userId, UserAvatarDTO userAvatarDTO) throws Exception;
     User updateUserAdminAction(Long userId,  UserUpdateAdminDTO userUpdateAdminDTO) throws Exception;
