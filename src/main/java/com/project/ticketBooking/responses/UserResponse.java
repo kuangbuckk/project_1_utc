@@ -32,7 +32,7 @@ public class UserResponse {
     private String address;
 
     @JsonProperty("is_active")
-    private boolean active;
+    private int active;
 
     @JsonProperty("date_of_birth")
     private LocalDate dateOfBirth;
@@ -56,7 +56,7 @@ public class UserResponse {
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .address(user.getAddress())
-//                .active(user.isActive())
+                .active(user.isActive())
                 .dateOfBirth(user.getDateOfBirth())
                 .facebookAccountId(user.getFacebookAccountId())
                 .googleAccountId(user.getGoogleAccountId())

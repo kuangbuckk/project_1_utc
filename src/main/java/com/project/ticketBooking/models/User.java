@@ -59,9 +59,8 @@ public class User extends BaseEntity implements UserDetails{
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @NotNull(message = "Organization ID cannot be null")
     @ManyToOne
-    @JoinColumn(name = "organization_id", nullable = false)
+    @JoinColumn(name = "organization_id", nullable = true)
     private Organization organization;
 
     @Override

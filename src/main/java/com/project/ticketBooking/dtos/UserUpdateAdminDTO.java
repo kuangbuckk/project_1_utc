@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserUpdateDTO {
+public class UserUpdateAdminDTO {
     @JsonProperty("full_name")
     private String fullName;
 
@@ -30,19 +30,16 @@ public class UserUpdateDTO {
     @JsonProperty("address")
     private String address;
 
-    @NotBlank(message = "Current password must be provided to update user")
-    @JsonProperty("current_password")
-    private String currentPassword;
+    @JsonProperty("is_active")
+    private Short isActive;
 
-    @NotBlank(message = "Password cannot be null")
-    @JsonProperty("new_password")
-    private String newPassword;
+    @NotNull(message = "Role ID cannot be null")
+    @JsonProperty("role_id")
+    @Min(value = 1, message = "Role ID must be greater than 0")
+    private Long roleId;
 
-    @JsonProperty("retype_new_password")
-    private String retypeNewPassword;
-
-    @JsonProperty("date_of_birth")
-    private LocalDate dateOfBirth;
-
-
+    @JsonProperty("organization_id")
+    @NotNull(message = "Organization ID cannot be null")
+    @Min(value = 1, message = "Organization ID must be greater than 0")
+    private Long organizationId;
 }

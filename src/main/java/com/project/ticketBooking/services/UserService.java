@@ -3,14 +3,18 @@ package com.project.ticketBooking.services;
 import com.project.ticketBooking.component.JwtTokenUtils;
 import com.project.ticketBooking.dtos.UserAvatarDTO;
 import com.project.ticketBooking.dtos.UserDTO;
+import com.project.ticketBooking.dtos.UserUpdateAdminDTO;
 import com.project.ticketBooking.dtos.UserUpdateDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.exceptions.PermissionDenyException;
+import com.project.ticketBooking.models.Organization;
 import com.project.ticketBooking.models.Role;
 import com.project.ticketBooking.models.User;
 import com.project.ticketBooking.models.UserAvatar;
+import com.project.ticketBooking.repositories.OrganizationRepository;
 import com.project.ticketBooking.repositories.RoleRepository;
 import com.project.ticketBooking.repositories.UserRepository;
+import com.project.ticketBooking.responses.UserResponse;
 import com.project.ticketBooking.services.interfaces.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,9 +34,27 @@ import java.util.Optional;
 public class UserService implements IUserService{
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final OrganizationRepository organizationRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
+    private final int ROLE_NOT_FOUND = 0;
+    @Override
+    public List<UserResponse> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(UserResponse::fromUser)
+                .toList();
+    }
+
+    @Override
+    public User getUserById(Long id) throws Exception {
+        Optional<User> optionalUser = userRepository.getUserById(id);
+        if(optionalUser.isEmpty()) {
+            throw new DataNotFoundException("User not found with id: " + id);
+        }
+        return optionalUser.get();
+    }
 
     @Override
     @Transactional
@@ -104,7 +127,7 @@ public class UserService implements IUserService{
             throw new DataNotFoundException("Role does not exists");
         }
         if(optionalUser.get().isActive() != 1) {
-            throw new DataNotFoundException("User is not active");
+            throw new DataNotFoundException("Your account is banned!");
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 email, password, existingUser.getAuthorities()
@@ -141,5 +164,33 @@ public class UserService implements IUserService{
     @Override
     public UserAvatar createuUserAvatar(Long eventId, UserAvatarDTO userAvatarDTO) throws Exception {
         return null;
+    }
+
+    @Override
+    @Transactional
+    public User updateUserAdminAction(Long userId, UserUpdateAdminDTO userUpdateAdminDTO) throws Exception {
+        Optional<User> existingUser = userRepository.getUserById(userId);
+        if(existingUser.isEmpty()) {
+            throw new DataNotFoundException("User not found");
+        }
+        User user = existingUser.get();
+        if (userUpdateAdminDTO.getOrganizationId() > ROLE_NOT_FOUND) {
+            Organization existingOrganization = organizationRepository.findById(userUpdateAdminDTO.getOrganizationId())
+                    .orElseThrow(() -> new DataNotFoundException("Organization not found"));
+            user.setOrganization(existingOrganization);
+        } else {
+            user.setOrganization(null);
+        }
+        Role existingRole = roleRepository.findById(userUpdateAdminDTO.getRoleId())
+                .orElseThrow(() -> new DataNotFoundException("Role not found"));
+
+        user.setFullName(userUpdateAdminDTO.getFullName());
+        user.setEmail(userUpdateAdminDTO.getEmail());
+        user.setPhoneNumber(userUpdateAdminDTO.getPhoneNumber());
+        user.setAddress(userUpdateAdminDTO.getAddress());
+        user.setIsActive(Integer.valueOf(userUpdateAdminDTO.getIsActive()));
+        user.setRole(existingRole);
+
+        return userRepository.save(user);
     }
 }

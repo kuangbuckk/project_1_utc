@@ -2,8 +2,10 @@ package com.project.ticketBooking.controllers;
 
 import com.project.ticketBooking.dtos.UserDTO;
 import com.project.ticketBooking.dtos.UserLoginDTO;
+import com.project.ticketBooking.dtos.UserUpdateAdminDTO;
 import com.project.ticketBooking.dtos.UserUpdateDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
+import com.project.ticketBooking.models.Ticket;
 import com.project.ticketBooking.models.User;
 import com.project.ticketBooking.responses.LoginResponse;
 import com.project.ticketBooking.responses.UserResponse;
@@ -23,6 +25,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
+    @GetMapping("/admin/retrieveAll")
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        List<UserResponse> userResponses = userService.getAllUsers();
+        return ResponseEntity.ok(userResponses);
+    }
+
+    @GetMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        try {
+            User user = userService.getUserById(id);
+            return ResponseEntity.ok(UserResponse.fromUser(user));
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
     @PostMapping("/register")
     public ResponseEntity<?> createUser(
             @Valid @RequestBody UserDTO userDTO,
@@ -117,6 +139,22 @@ public class UserController {
             return ResponseEntity.ok(userResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/admin/updateUser/{userId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> updateUserOrganization(
+            @PathVariable("userId") Long userId,
+            @RequestBody UserUpdateAdminDTO userUpdateAdminDTO
+            ) {
+        try {
+            User updatedUser = userService.updateUserAdminAction(userId, userUpdateAdminDTO);
+            return ResponseEntity.ok(UserResponse.fromUser(updatedUser));
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
         }
     }
 }
