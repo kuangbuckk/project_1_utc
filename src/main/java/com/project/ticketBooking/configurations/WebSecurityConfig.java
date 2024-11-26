@@ -126,6 +126,9 @@ public class WebSecurityConfig {
                             .requestMatchers(DELETE,
                                     String.format("%s/ticketOrders/**", apiPrefix)).hasRole(Role.ADMIN)
 
+                            //excel
+                            .requestMatchers(GET,
+                                    String.format("%s/excel/**", apiPrefix)).hasRole(Role.ADMIN)
                             //any request
                             .anyRequest().authenticated();
                 })
