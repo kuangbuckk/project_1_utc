@@ -147,6 +147,14 @@ public class UserService implements IUserService{
         if(!passwordEncoder.matches(userDTO.getCurrentPassword(), userEncodedCurrentPassword)) {
             throw new DataNotFoundException("Current password/email is not correct");
         }
+        if (userDTO.getNewPassword().isEmpty()) {
+            existingUser.setFullName(userDTO.getFullName());
+            existingUser.setPhoneNumber(userDTO.getPhoneNumber());
+            existingUser.setAddress(userDTO.getAddress());
+            existingUser.setDateOfBirth(userDTO.getDateOfBirth());
+            return userRepository.save(existingUser);
+        }
+
         if(Objects.equals(userDTO.getNewPassword(), userDTO.getRetypeNewPassword())) {
             String newPassword = userDTO.getNewPassword();
             String encodedPassword = passwordEncoder.encode(newPassword);

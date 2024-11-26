@@ -34,7 +34,7 @@ public class UserUpdateDTO {
     @JsonProperty("current_password")
     private String currentPassword;
 
-    @NotBlank(message = "Password cannot be null")
+//    @NotBlank(message = "Password cannot be null")
     @JsonProperty("new_password")
     private String newPassword;
 

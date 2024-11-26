@@ -131,8 +131,10 @@ public class UserController {
                         .toList();
                 return ResponseEntity.badRequest().body(errorMessages);
             }
-            if (!userUpdateDTO.getNewPassword().equals(userUpdateDTO.getRetypeNewPassword())) {
-                return ResponseEntity.badRequest().body("Password does not match");
+            if (!userUpdateDTO.getNewPassword().isEmpty()) {
+                if (!userUpdateDTO.getNewPassword().equals(userUpdateDTO.getRetypeNewPassword())) {
+                    return ResponseEntity.badRequest().body("Password does not match");
+                }
             }
             String extractedToken = token.substring(7);
             User updatedUser = userService.updateUser(extractedToken, userUpdateDTO);
