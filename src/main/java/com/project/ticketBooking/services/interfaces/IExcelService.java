@@ -5,4 +5,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface IExcelService {
     void exportEventToExcel(HttpServletResponse response);
+    void exportOrganizationToExcel(HttpServletResponse response);
 }

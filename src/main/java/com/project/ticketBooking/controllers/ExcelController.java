@@ -22,4 +22,12 @@ public class ExcelController {
         response.setContentType("application/octet-stream");
         excelService.exportEventToExcel(response);
     }
+
+    @GetMapping("/export/organizations")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void exportOrganizationToExcel(HttpServletResponse response) {
+        response.setHeader("Content-Disposition", "attachment; filename=organizations.xls");
+        response.setContentType("application/octet-stream");
+        excelService.exportOrganizationToExcel(response);
+    }
 }

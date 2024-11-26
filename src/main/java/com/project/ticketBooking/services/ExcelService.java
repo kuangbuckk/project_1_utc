@@ -1,6 +1,7 @@
 package com.project.ticketBooking.services;
 
 import com.project.ticketBooking.models.Event;
+import com.project.ticketBooking.models.Organization;
 import com.project.ticketBooking.services.interfaces.IExcelService;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExcelService implements IExcelService {
     private final EventService eventService;
+    private final OrganizationService organizationService;
 
     @Override
     public void exportEventToExcel(HttpServletResponse response) {
@@ -51,6 +53,32 @@ public class ExcelService implements IExcelService {
             workbook.close();
             ops.close();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void exportOrganizationToExcel(HttpServletResponse response) {
+        try{
+            Workbook workbook = new HSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Organizations");
+            Row headerRow = sheet.createRow(0);
+            String[] headers  = {"ID", "Name"};
+            for (int i = 0; i < headers.length; i++) {
+                headerRow.createCell(i).setCellValue(headers[i]);
+            }
+            List<Organization> organizations = organizationService.getAllOrganizations();
+            int rowNum = 1;
+            for (Organization organization : organizations) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(organization.getId());
+                row.createCell(1).setCellValue(organization.getName());
+            }
+            ServletOutputStream ops = response.getOutputStream();
+            workbook.write(ops);
+            workbook.close();
+            ops.close();
+        }catch (Exception e) {
             e.printStackTrace();
         }
     }
