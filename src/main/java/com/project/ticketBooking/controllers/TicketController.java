@@ -142,4 +142,21 @@ public class TicketController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/organization/retrieveAll")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
+    public ResponseEntity<?> getTicketsByOrganizationId(
+            @RequestHeader("Authorization") String token
+    ) {
+        try {
+            String extractedToken = token.substring(7);
+            List<Ticket> tickets = ticketService.getTicketsByOrganization(extractedToken);
+            List<TicketResponse> ticketResponses = Arrays.asList(tickets.stream()
+                    .map(TicketResponse::fromTicket)
+                    .toArray(TicketResponse[]::new));
+            return ResponseEntity.ok(ticketResponses);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

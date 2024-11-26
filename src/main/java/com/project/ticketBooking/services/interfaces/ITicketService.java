@@ -18,6 +18,7 @@ public interface ITicketService {
     void deleteTicket(Long ticketId);
     List<Ticket> getTicketByUserId(Long userId) throws DataNotFoundException;
     List<Ticket> getTicketsByTicketOrderDetailId(Long ticketOrderDetailId) throws DataNotFoundException;
+    List<Ticket> getTicketsByOrganization(String token) throws DataNotFoundException;
 //    List<Ticket> findAllPurchasedTickets();
     int getRemainingTicketsByCategoryId(Long ticketCategoryId);
 }

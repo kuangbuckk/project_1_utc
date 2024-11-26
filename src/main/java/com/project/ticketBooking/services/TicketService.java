@@ -1,5 +1,6 @@
 package com.project.ticketBooking.services;
 
+import com.project.ticketBooking.component.JwtTokenUtils;
 import com.project.ticketBooking.dtos.TicketDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.models.*;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TicketService implements ITicketService {
     private final TicketRepository ticketRepository;
+    private final JwtTokenUtils jwtTokenUtils;
     private final TicketCategoryRepository ticketCategoryRepository;
     private final UserRepository userRepository;
     private final TicketOrderDetailRepository ticketOrderDetailRepository;
@@ -105,6 +107,12 @@ public class TicketService implements ITicketService {
     @Override
     public List<Ticket> getTicketsByTicketOrderDetailId(Long ticketOrderDetailId) throws DataNotFoundException {
         return ticketRepository.findByTicketOrderDetailId(ticketOrderDetailId);
+    }
+
+    @Override
+    public List<Ticket> getTicketsByOrganization(String token) throws DataNotFoundException {
+        Integer organizationId = jwtTokenUtils.extractOrganizationId(token);
+        return ticketRepository.findAllByOrganizationId(Long.valueOf(organizationId));
     }
 
 
