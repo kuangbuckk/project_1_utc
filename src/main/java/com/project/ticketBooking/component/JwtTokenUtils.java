@@ -31,7 +31,7 @@ public class JwtTokenUtils {
 
     //To generate JWT tokens
     public String generateToken(User user) throws InvalidParamException {
-        Map<String, Object> claims = new HashMap<>();
+        Map<String, Object> claims = new HashMap<>(); // claims là một bản đồ dữ liệu (key-value) dùng để lưu các thông tin mà bạn muốn "nhúng" vào JWT.
 //        this.generateSecretKey();
         claims.put("email", user.getEmail());
         claims.put("userId", user.getId());
@@ -40,9 +40,14 @@ public class JwtTokenUtils {
         }
         try {
             String token = Jwts.builder()
-                    .setClaims(claims) //how to extract clains from this?
-                    .setSubject(user.getEmail())
+                    .setClaims(claims) // Thêm dữ liệu claims vào token. Đây là phần chính chứa thông tin bạn muốn lưu trữ trong JWT.
+                    .setSubject(user.getEmail()) // subject là một trường trong payload của JWT, thường dùng để đại diện cho danh tính chính của người dùng (ở đây là email).
+                    // Thiết lập thời gian hết hạn cho JWT.
+                    // System.currentTimeMillis() trả về thời gian hiện tại tính bằng mili-giây.
+                    // expiration * 1000L là số giây bạn muốn JWT có hiệu lực (thường được đặt trong cấu hình). Sau thời gian này, token sẽ hết hạn và không còn hợp lệ.
                     .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
+                    // Ký token bằng khóa bí mật (getSignInKey()) và thuật toán mã hóa HS256 (HMAC with SHA-256).
+                    // Phần khóa bí mật được dùng để bảo vệ token. Chỉ những ai có khóa này mới có thể giải mã và xác thực token.
                     .signWith(getSignInKey(), SignatureAlgorithm.HS256) //secret key để dịch ngược lại ra claims
                     .compact();
             return token;
@@ -52,6 +57,8 @@ public class JwtTokenUtils {
         }
     }
 
+    //Hàm getSignInKey() mà bạn cung cấp được sử dụng
+    // để tạo ra một khóa bí mật (signing key) cho việc ký và xác thực JWT
     private Key getSignInKey(){
         byte[] bytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(bytes);
