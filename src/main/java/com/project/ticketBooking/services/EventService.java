@@ -27,11 +27,8 @@ public class EventService implements IEventService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public List<EventResponse> getAllEvents() {
-        List<Event> events = eventRepository.findAll();
-        return events.stream()
-                .map(EventResponse::fromEvent)
-                .toList();
+    public List<Event> getAllEvents() {
+        return eventRepository.findAll();
     }
 
     @Override

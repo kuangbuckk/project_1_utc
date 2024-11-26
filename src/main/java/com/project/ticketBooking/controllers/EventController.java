@@ -81,8 +81,11 @@ public class EventController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getAllEvents() {
         try {
-            List<EventResponse> events = eventService.getAllEvents();
-            return ResponseEntity.ok(events);
+            List<Event> events = eventService.getAllEvents();
+            List<EventResponse> eventResponses = events.stream()
+                    .map(EventResponse::fromEvent)
+                    .toList();
+            return ResponseEntity.ok(eventResponses);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
