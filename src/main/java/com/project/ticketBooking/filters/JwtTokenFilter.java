@@ -84,7 +84,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             if (request.getServletPath().contains(bypassToken.getLeft()) &&
                     request.getMethod().equals(bypassToken.getRight())
                     &&
-                    !(request.getServletPath().contains("events/getAll") && request.getMethod().equals("GET"))) {
+                    !(request.getServletPath().contains("events/getAll") && request.getMethod().equals("GET")) &&
+                    !(request.getServletPath().contains("events/organization") && request.getMethod().equals("GET"))) {
                 return true;
             }
         }

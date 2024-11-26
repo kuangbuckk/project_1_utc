@@ -147,6 +147,14 @@ public class EventService implements IEventService {
     }
 
     @Override
+    public List<EventResponse> getAllEventsByOrganization(Long organizationId) {
+        return eventRepository.findAllByOrganizationId(organizationId)
+                .stream()
+                .map(EventResponse::fromEvent)
+                .toList();
+    }
+
+    @Override
     public Page<EventResponse> getAllEventsByCategoryId(Long categoryId, PageRequest pageRequest) throws DataNotFoundException {
         return eventRepository.findByCategoryId(categoryId, pageRequest)
                 .map(EventResponse::fromEvent);

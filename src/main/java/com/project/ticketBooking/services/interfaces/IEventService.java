@@ -23,6 +23,7 @@ public interface IEventService {
     Event updateEventStatus(Long eventId, String status) throws DataNotFoundException, InvalidParamException;
     EventImage createEventImage(Long eventId, EventImageDTO eventImageDTO) throws Exception;
     Page<EventResponse> getAllEventsByOrganizationId(Long organizationId, PageRequest pageRequest) throws DataNotFoundException;
+    List<EventResponse> getAllEventsByOrganization(Long organizationId);
     Page<EventResponse> getAllEventsByCategoryId(Long categoryId, PageRequest pageRequest) throws DataNotFoundException;
     Page<EventResponse> searchByKeyword(String keyword, PageRequest pageRequest);
 }

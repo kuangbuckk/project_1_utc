@@ -275,6 +275,18 @@ public class EventController {
         }
     }
 
+    @GetMapping("/organization/{organizationId}/retrieveAll")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ORGANIZER')")
+    public ResponseEntity<?> getAllEventsByOrganization(
+            @PathVariable("organizationId") Long organizationId) {
+        try {
+            List<EventResponse> events = eventService.getAllEventsByOrganization(organizationId);
+            return ResponseEntity.ok(events);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<?> getEventsByCategoryId(
             @PathVariable Long categoryId,
