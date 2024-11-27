@@ -15,6 +15,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExcelController {
     private final ExcelService excelService;
 
+    @GetMapping("/export/events/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void exportEventStatusToExcel(HttpServletResponse response) {
+        response.setHeader("Content-Disposition", "attachment; filename=eventsByStatus.xlsx");
+        response.setContentType("application/octet-stream");
+        excelService.exportEventByStatusToExcel(response);
+    }
+
+    @GetMapping("/export/events/category")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void exportEventCategoryToExcel(HttpServletResponse response) {
+        response.setHeader("Content-Disposition", "attachment; filename=eventsByCategory.xlsx");
+        response.setContentType("application/octet-stream");
+        excelService.exportEventByCategoryToExcel(response);
+    }
+
     @GetMapping("/export/events")
     @PreAuthorize("hasRole('ADMIN')")
     public void exportEventToExcel(HttpServletResponse response) {
@@ -30,4 +46,7 @@ public class ExcelController {
         response.setContentType("application/octet-stream");
         excelService.exportOrganizationToExcel(response);
     }
+
+
+
 }
