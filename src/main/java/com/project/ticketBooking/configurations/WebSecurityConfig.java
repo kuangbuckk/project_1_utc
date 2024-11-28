@@ -129,6 +129,9 @@ public class WebSecurityConfig {
                             //excel
                             .requestMatchers(GET,
                                     String.format("%s/excel/**", apiPrefix)).hasRole(Role.ADMIN)
+
+                            .requestMatchers(POST,
+                                    String.format("%s/email/sendEmail", apiPrefix)).hasRole(Role.ADMIN)
                             //any request
                             .anyRequest().authenticated();
                 })
