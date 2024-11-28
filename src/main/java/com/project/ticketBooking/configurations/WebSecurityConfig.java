@@ -126,6 +126,16 @@ public class WebSecurityConfig {
                             .requestMatchers(DELETE,
                                     String.format("%s/ticketOrders/**", apiPrefix)).hasRole(Role.ADMIN)
 
+                            //feedbacks
+                            .requestMatchers(GET,
+                                    String.format("%s/feedbacks/**", apiPrefix)).hasRole(Role.ADMIN)
+                            .requestMatchers(POST,
+                                    String.format("%s/feedbacks/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
+                            .requestMatchers(PATCH,
+                                    String.format("%s/feedbacks/**", apiPrefix)).hasRole(Role.ADMIN)
+                            .requestMatchers(DELETE,
+                                    String.format("%s/feedbacks/**", apiPrefix)).hasRole(Role.ADMIN)
+
                             //excel
                             .requestMatchers(GET,
                                     String.format("%s/excel/**", apiPrefix)).hasRole(Role.ADMIN)
