@@ -26,7 +26,9 @@ public class FeedbackController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> getFeedbackById(Long id) {
+    public ResponseEntity<?> getFeedbackById(
+            @PathVariable("id") Long id
+    ) {
         try {
             return ResponseEntity.ok(feedbackService.getFeedbackById(id));
         } catch (DataNotFoundException e) {
