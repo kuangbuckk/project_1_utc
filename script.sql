@@ -26,6 +26,15 @@ ALTER TABLE users
 ADD COLUMN organization_id INT REFERENCES organizations (id) DEFAULT NULL ON DELETE SET NULL;
 --quản lý ban tổ chức và admin sẽ bàn giao quyền cho user bằng cách thay đổi organization_id cho user trên dashboard
 
+CREATE TABLE feedbacks (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users (id) ON DELETE CASCADE,
+    email VARCHAR(120) NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    content VARCHAR(400) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE user_avatars
 (
     id        SERIAL PRIMARY KEY,
