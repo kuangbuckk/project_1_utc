@@ -175,27 +175,35 @@ public class ExcelService implements IExcelService {
 
     @Override
     public void exportOrganizationToExcel(HttpServletResponse response) {
-        try{
+        try {
             Workbook workbook = new HSSFWorkbook();
-            Sheet sheet = workbook.createSheet("Organizations");
+            Sheet sheet = workbook.createSheet("Events");
+
             Row headerRow = sheet.createRow(0);
-            String[] headers  = {"ID", "Name"};
+            String[] headers  = {"ID", "Name", "Description", "Start Date", "End Date", "Location", "Status"};
             for (int i = 0; i < headers.length; i++) {
                 headerRow.createCell(i).setCellValue(headers[i]);
             }
-            List<Organization> organizations = organizationService.getAllOrganizations();
+            List<Event> events = eventService.getAllEvents();
             int rowNum = 1;
-            for (Organization organization : organizations) {
+            for (Event event : events) {
                 Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(organization.getId());
-                row.createCell(1).setCellValue(organization.getName());
+                row.createCell(0).setCellValue(event.getId());
+                row.createCell(1).setCellValue(event.getName());
+                row.createCell(2).setCellValue(event.getDescription());
+                row.createCell(3).setCellValue(event.getStartDate().toString());
+                row.createCell(4).setCellValue(event.getEndDate().toString());
+                row.createCell(5).setCellValue(event.getLocation());
+                row.createCell(6).setCellValue(event.getStatus());
             }
             ServletOutputStream ops = response.getOutputStream();
             workbook.write(ops);
             workbook.close();
             ops.close();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 }

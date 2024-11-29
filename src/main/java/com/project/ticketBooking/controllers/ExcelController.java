@@ -32,7 +32,7 @@ public class ExcelController {
     }
 
     @GetMapping("/export/events")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
     public void exportEventToExcel(HttpServletResponse response) {
         response.setHeader("Content-Disposition", "attachment; filename=events.xls");
         response.setContentType("application/octet-stream");
@@ -46,7 +46,4 @@ public class ExcelController {
         response.setContentType("application/octet-stream");
         excelService.exportOrganizationToExcel(response);
     }
-
-
-
 }

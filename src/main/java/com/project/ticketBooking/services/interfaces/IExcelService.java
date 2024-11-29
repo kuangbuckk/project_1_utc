@@ -9,4 +9,5 @@ public interface IExcelService {
     void exportEventToExcel(HttpServletResponse response);
     void exportOrganizationToExcel(HttpServletResponse response);
     void exportEventByCategoryToExcel(HttpServletResponse response);
+
 }
