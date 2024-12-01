@@ -25,4 +25,13 @@ api:
   prefix: api/v1
 jwt:
   expiration: 2592000
-  secretKey: TaqlmGv1iEEDMRiFp/pHuID1+T84IABfuA0xXh4hiUI=
+  secretKey: TaqlmGv1iEEDMRiFp/pHuID1+T84IABfuA0xXh4hiUI=logging:
+  level:
+    io:
+      lettuce:
+        core: DEBUG
+        redis: DEBUG
+    org:
+        springframework:
+            data:
+            redis: DEBUG

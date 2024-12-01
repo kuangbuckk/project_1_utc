@@ -35,6 +35,9 @@ public class WebSecurityConfig {
     @Value("${api.prefix}")
     private String apiPrefix;
 
+    @Value("${api.front-end-url}")
+    private String frontEndUrl;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -151,7 +154,7 @@ public class WebSecurityConfig {
             @Override
             public void customize(CorsConfigurer<HttpSecurity> httpSecurityCorsConfigurer) {
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOrigins(List.of("*")); //anyone can send requests
+                configuration.setAllowedOrigins(List.of(frontEndUrl)); //anyone can send requests
                 configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
                 configuration.setExposedHeaders(List.of("x-auth-token"));

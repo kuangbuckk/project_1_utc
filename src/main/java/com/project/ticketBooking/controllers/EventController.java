@@ -6,7 +6,6 @@ import com.project.ticketBooking.dtos.EventImageDTO;
 import com.project.ticketBooking.exceptions.DataNotFoundException;
 import com.project.ticketBooking.models.Event;
 import com.project.ticketBooking.models.EventImage;
-import com.project.ticketBooking.models.Ticket;
 import com.project.ticketBooking.responses.EventListResponse;
 import com.project.ticketBooking.responses.EventResponse;
 import com.project.ticketBooking.services.EventRedisService;
@@ -50,31 +49,45 @@ public class EventController {
             @RequestParam("page")     int page,
             @RequestParam("limit")    int limit
     ) throws JsonProcessingException {
-        int totalPages = 0;
-        // Tạo Pageable từ thông tin trang và giới hạn
-        PageRequest pageRequest = PageRequest.of(
-                page, limit,
-                Sort.by("id").descending()
-        );
-        logger.info(String.format("page = %d, limit = %d", page, limit));
-        List<EventResponse> eventResponses = eventRedisService.getAllEvents(pageRequest); //lấy dữ lieeuj từ cache Redis
-        if (eventResponses == null) {
-            Page<EventResponse> eventPage = eventService.getAllEventsPageable(pageRequest); //lấy dữ liệu từ DB
-            // Lấy tổng số trang
-            totalPages = eventPage.getTotalPages();
-            eventResponses = eventPage.getContent();
-            eventRedisService.saveAllEvents(eventResponses, pageRequest); //lưu vào cache Redis
-        } else {
-            long totalEvents = eventService.getTotalEventsCount();
-            totalPages = (int) Math.ceil((double) totalEvents / limit);
-        }
+        try {
+            int totalPages = 0;
+            // Tạo Pageable từ thông tin trang và giới hạn
+            PageRequest pageRequest = PageRequest.of(
+                    page, limit,
+                    Sort.by("id").descending()
+            );
+            logger.info(String.format("page = %d, limit = %d", page, limit));
+            List<EventResponse> eventResponses = null;
+            try {
+                eventResponses = eventRedisService.getAllEvents(pageRequest); // Redis Cache
+            } catch (Exception e) {
+                logger.warning("Redis connection failed, cant fetch events: " + e.getMessage());
+            } //lấy dữ lieeuj từ cache Redis
+            if (eventResponses == null) {
+                Page<EventResponse> eventPage = eventService.getAllEventsPageable(pageRequest); //lấy dữ liệu từ DB
+                // Lấy tổng số trang
+                totalPages = eventPage.getTotalPages();
+                eventResponses = eventPage.getContent();
+                try {
+                    eventRedisService.saveAllEvents(eventResponses, pageRequest); // Save to Redis
+                } catch (Exception e) {
+                    logger.warning("Failed to save to Redis, cant save events value: " + e.getMessage());
+                }
+            } else {
+                long totalEvents = eventService.getTotalEventsCount();
+                totalPages = (int) Math.ceil((double) totalEvents / limit);
+            }
 
-        return ResponseEntity.ok(EventListResponse
-                .builder()
-                .events(eventResponses)
-                .totalPages(totalPages)
-                .build()
-        );
+            return ResponseEntity.ok(EventListResponse
+                    .builder()
+                    .events(eventResponses)
+                    .totalPages(totalPages)
+                    .build()
+            );
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/getAll")
