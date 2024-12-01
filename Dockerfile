@@ -16,6 +16,9 @@ RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/
 
 COPY --from=build /app/target/ticketBooking-0.0.1-SNAPSHOT.jar .
 
+#them folder anh vao docker
+COPY uploads/ /app/uploads/
+
 EXPOSE 8090
 
 ENTRYPOINT ["java", "-jar", "/app/ticketBooking-0.0.1-SNAPSHOT.jar"]
