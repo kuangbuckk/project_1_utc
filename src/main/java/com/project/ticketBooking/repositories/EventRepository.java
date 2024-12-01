@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
+    @Query("SELECT e FROM Event e WHERE e.status = 'active'")
     Page<Event> findAll(Pageable pageable);
     List<Event> findAllByOrganizationId(Long organizationId);
     Page<Event>  findByOrganizationId(Long organizationId, Pageable pageable);
