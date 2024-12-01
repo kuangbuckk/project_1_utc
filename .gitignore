@@ -5,7 +5,7 @@ target/
 !**/src/test/**/target/
 uploads/**/*
 src/main/resources/application.yml
-
+.env
 ### STS ###
 .apt_generated
 .classpath

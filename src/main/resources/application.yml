@@ -6,9 +6,9 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
   datasource:
-    url: jdbc:postgresql://localhost:5432/ticketbooking?serverTimezone=UTC
-    username: postgres
-    password: Springter2003
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USER}
+    password: ${DATASOURCE_PASSWORD}
   jpa:
     show-sql: true
     hibernate:
@@ -19,13 +19,31 @@ spring:
         format_sql: true
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      username: ${REDIS_USERNAME}
+      password: ${REDIS_PASSWORD}
+      ssl:
+        enabled: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 api:
   prefix: api/v1
+  front-end-url: ${FRONT_END_URL}
 jwt:
-  expiration: 2592000
-  secretKey: TaqlmGv1iEEDMRiFp/pHuID1+T84IABfuA0xXh4hiUI=logging:
+  expiration: ${JWT_EXPIRATION}
+  secretKey: ${JWT_SECRET_KEY}
+logging:
   level:
     io:
       lettuce:
