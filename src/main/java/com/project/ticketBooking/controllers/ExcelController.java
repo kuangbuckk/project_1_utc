@@ -1,6 +1,5 @@
 package com.project.ticketBooking.controllers;
 
-import com.project.ticketBooking.services.EventService;
 import com.project.ticketBooking.services.ExcelService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
